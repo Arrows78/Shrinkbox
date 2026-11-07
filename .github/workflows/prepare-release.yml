@@ -1,0 +1,67 @@
+# One-click release: works out the version from the commits (or takes the one you give), updates the
+# changelog and the version files, commits, tags, pushes, then runs the release workflow on that tag.
+# Run it from the Actions tab (Run workflow) on main. The tag is pushed with the workflow's own token, which does
+# not start other workflows by itself: that is why the release workflow is called from here.
+name: Prepare release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to release, e.g. 0.4.1 (empty: worked out from the commits since the last tag)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.prepare.outputs.tag }}
+    steps:
+      - name: Only from main
+        run: |
+          if [ "$GITHUB_REF_NAME" != "main" ]; then
+            echo "::error::Run this workflow on main (it was started on $GITHUB_REF_NAME)."
+            exit 1
+          fi
+
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check the commit messages
+        run: |
+          last=$(git describe --tags --abbrev=0 --match 'v*')
+          python3 -B scripts/release.py lint "$last..HEAD"
+
+      - name: Prepare
+        id: prepare
+        env:
+          VERSION_INPUT: ${{ inputs.version }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if [ -n "$VERSION_INPUT" ]; then
+            python3 -B scripts/release.py prepare --version "$VERSION_INPUT" --commit
+          else
+            python3 -B scripts/release.py prepare --commit
+          fi
+          version=$(git log -1 --format=%s | sed -nE 's/^chore\(release\): ([0-9]+\.[0-9]+\.[0-9]+.*)$/\1/p')
+          if [ -z "$version" ]; then
+            echo "::error::Nothing was prepared: no commit since the last tag belongs in a release (give a version to force one)."
+            exit 1
+          fi
+          python3 -B scripts/release.py check
+          git tag "v$version"
+          git push --atomic origin main "v$version"
+          echo "tag=v$version" >> "$GITHUB_OUTPUT"
+
+  release:
+    needs: prepare
+    uses: ./.github/workflows/release.yml
+    with:
+      tag: ${{ needs.prepare.outputs.tag }}
+    secrets: inherit

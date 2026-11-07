@@ -1,0 +1,34 @@
+# Runs the same checks as scripts/ci.sh on every push to main and every pull request.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    runs-on: macos-15
+    steps:
+      # The whole history: the release files check reads the tags and the commits.
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Run scripts/ci.sh
+        run: sh scripts/ci.sh
+
+      - name: Commit messages follow Conventional Commits
+        if: github.event_name == 'pull_request'
+        run: python3 -B scripts/release.py lint "${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}"

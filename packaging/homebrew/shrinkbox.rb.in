@@ -1,0 +1,30 @@
+cask "shrinkbox" do
+  version "@VERSION@"
+  sha256 "@SHA256@"
+
+  url "@BASE_URL@/v#{version}/Shrinkbox-#{version}.zip"
+  name "Shrinkbox"
+  desc "Notch island with music, timers, clipboard, files and system alerts"
+  homepage "https://github.com/Arrows78/Shrinkbox"
+
+  livecheck do
+    url :url
+    strategy :github_latest
+  end
+
+  depends_on macos: :sonoma
+
+  app "Shrinkbox.app"
+
+  # Your own files are never removed.
+  zap trash: [
+    "~/Library/Application Support/Shrinkbox",
+    "~/Library/Preferences/dev.labs.shrinkbox.plist",
+  ]
+
+  caveats <<~EOS
+    Shrinkbox is signed ad hoc and not notarized, so macOS blocks the first launch.
+    Open System Settings > Privacy & Security and click "Open Anyway",
+    or run: xattr -dr com.apple.quarantine /Applications/Shrinkbox.app
+  EOS
+end
