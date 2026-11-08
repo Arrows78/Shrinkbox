@@ -4,10 +4,35 @@ All notable changes to Shrinkbox are listed here, newest first. The file is gene
 from the commit messages (Conventional Commits) and the `v*` tags: do not edit it by hand. See
 `docs/RELEASING.md`. Versions follow [Semantic Versioning](https://semver.org).
 
+## [0.2.0] - 2026-11-08
+
+### Added
+
+- **ui**: Redesign the floating results and the drop zone
+- **results**: Add ready-made pipelines, AirDrop, shelf apps and a before and after view
+- **crop**: Add a crop window with saved sizes, speed changes and cover art
+- **l10n**: Translate the new menus, sizes and crop window
+- **keys**: Act on results from the keyboard and show short messages on screen
+- **clipboard**: Optimise a copied link or path, aggressively, or skip the next copy
+- **l10n**: Translate the keys, the icon styles and the messages
+- **media**: Use gifski and exiftool, filter watched videos by resolution
+- **batch**: Review and adjust a batch before it starts
+- **settings**: Build pipelines, automations and preset zones from the window
+- **l10n**: Translate the batch, automation and installer texts
+- **clipboard**: Take the originals of photos copied from Photos
+- **l10n**: Translate the Photos settings
+
+### Fixed
+
+- **cli**: Find the app and its settings when run through a symlink
+- **results**: Say so when a conversion makes a file bigger
+- **build**: Keep macOS privacy permissions across updates
+
 ## [0.1.0] - 2026-11-08
 
 ### Added
 
 - Initial release.
 
+[0.2.0]: https://github.com/Arrows78/Shrinkbox/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/Arrows78/Shrinkbox/releases/tag/v0.1.0
