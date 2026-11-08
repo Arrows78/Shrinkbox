@@ -262,7 +262,7 @@ enum Runner {
     }
 
     static func expand(_ template: String, source: URL, groups: [String], counter: Int) -> String {
-        var s = NameTemplate.expand((template as NSString).expandingTildeInPath, source: source, counter: counter)
+        var s = NameTemplate.expand(template.expandingTilde, source: source, counter: counter)
         for (i, g) in groups.enumerated() { s = s.replacingOccurrences(of: "$\(i + 1)", with: g) }
         return s
     }

@@ -3,6 +3,7 @@
 # into /Applications and relaunches it, unless SHRINKBOX_NO_INSTALL is set or this runs in CI.
 # SHRINKBOX_UNIVERSAL=1 builds for Apple Silicon and Intel (used by the release workflow).
 set -euo pipefail
+setopt nullglob   # an empty glob (no resource bundle) is not an error
 cd "$(dirname "$0")"
 
 build_arch() {  # $1 = arm64 | x86_64 (empty = host); prints only the bin path on stdout
@@ -30,10 +31,10 @@ else
   cp "$BINDIR/Shrinkbox" "$APP/Contents/MacOS/Shrinkbox"
 fi
 # Resource bundles produced by packages sit next to the executable's resources.
-for b in "$BINDIR"/*.bundle; do [ -d "$b" ] && cp -R "$b" "$APP/Contents/Resources/"; done
+for b in "$BINDIR"/*.bundle; do [ -d "$b" ] || continue; cp -R "$b" "$APP/Contents/Resources/"; done
 cp Resources/Info.plist "$APP/Contents/Info.plist"
 [ -f Resources/AppIcon.icns ] && cp Resources/AppIcon.icns "$APP/Contents/Resources/AppIcon.icns"
-for lp in Resources/*.lproj; do [ -d "$lp" ] && cp -R "$lp" "$APP/Contents/Resources/"; done
+for lp in Resources/*.lproj; do [ -d "$lp" ] || continue; cp -R "$lp" "$APP/Contents/Resources/"; done
 
 # A stable signing identity keeps macOS privacy permissions across rebuilds; an ad-hoc signature changes on
 # every build and makes macOS forget them.

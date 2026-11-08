@@ -237,6 +237,14 @@ enum NameTemplate {
     }
 }
 
+extension String {
+    /// `~` expanded, keeping a trailing slash: it is what says "this is a folder".
+    var expandingTilde: String {
+        let e = (self as NSString).expandingTildeInPath
+        return hasSuffix("/") && !e.hasSuffix("/") ? e + "/" : e
+    }
+}
+
 extension Array {
     subscript(safe i: Int) -> Element? { indices.contains(i) ? self[i] : nil }
 }
@@ -304,7 +312,7 @@ enum Output {
         case .temporary:
             return Workspace.temp(ext: ext, name: name)
         case .folder(let path):
-            let expanded = NameTemplate.expand((path as NSString).expandingTildeInPath, source: source, size: size, scale: scale, counter: counter)
+            let expanded = NameTemplate.expand(path.expandingTilde, source: source, size: size, scale: scale, counter: counter)
             var url = URL(fileURLWithPath: expanded)
             var isDir: ObjCBool = false
             if expanded.hasSuffix("/") || (FileManager.default.fileExists(atPath: expanded, isDirectory: &isDir) && isDir.boolValue) {
