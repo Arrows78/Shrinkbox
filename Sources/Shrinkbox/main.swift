@@ -2,6 +2,7 @@ import AppKit
 
 MainActor.assumeIsolated {
     let argv = CommandLine.arguments
+    if argv.contains("--selftest") { exit(SelfTest.run()) }
     if CLI.isCommand(argv) {
         var code: Int32 = 0
         let done = DispatchSemaphore(value: 0)
