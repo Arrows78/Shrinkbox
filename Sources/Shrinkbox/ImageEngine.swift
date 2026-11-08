@@ -345,7 +345,20 @@ enum ImageEngine {
     // MARK: Metadata
 
     /// Removes EXIF, GPS, XMP and IPTC from a copy of the file without re-encoding the pixels.
-    static func stripMetadata(_ src: URL, preserveColor: Bool = true) throws -> URL {
+    static func stripMetadata(_ src: URL, preserveColor: Bool = true) async throws -> URL {
+        // exiftool removes every tag, the ones ImageIO leaves in some formats included.
+        if let exif = Tool.exiftool.url {
+            let out = Workspace.temp(ext: src.pathExtension, name: src.deletingPathExtension().lastPathComponent)
+            try FileManager.default.copyItem(at: src, to: out)
+            var args = ["-all=", "-overwrite_original", "-q"]
+            if preserveColor { args += ["-tagsfromfile", "@", "-icc_profile"] }
+            let r = try await Run.process(exif, args + [out.path])
+            if r.status == 0 { return out }
+        }
+        return try stripWithImageIO(src, preserveColor: preserveColor)
+    }
+
+    static func stripWithImageIO(_ src: URL, preserveColor: Bool = true) throws -> URL {
         guard let source = CGImageSourceCreateWithURL(src as CFURL, nil), let type = CGImageSourceGetType(source) else { throw ShrinkError.failed(L("Cannot read %@", src.lastPathComponent)) }
         let out = Workspace.temp(ext: src.pathExtension, name: src.deletingPathExtension().lastPathComponent)
         guard let dest = CGImageDestinationCreateWithURL(out as CFURL, type, 1, nil) else { throw ShrinkError.failed(L("Cannot write %@", out.lastPathComponent)) }

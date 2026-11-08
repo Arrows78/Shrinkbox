@@ -151,7 +151,7 @@ enum Runner {
             case .stripExif:
                 let produced: URL?
                 switch kind {
-                case .image: produced = try ImageEngine.stripMetadata(current, preserveColor: Prefs.bool("preserveColorMetadata"))
+                case .image: produced = try await ImageEngine.stripMetadata(current, preserveColor: Prefs.bool("preserveColorMetadata"))
                 case .video: produced = try await VideoEngine.stripMetadata(current)
                 default: produced = nil
                 }

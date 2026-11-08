@@ -1,6 +1,7 @@
 import AppKit
 import CoreServices
 import ImageIO
+import AVFoundation
 
 /// Watches folders with FSEvents and hands new files to the optimiser once they stop growing.
 @MainActor
@@ -81,8 +82,21 @@ final class FolderWatcher {
             let files = list.map(\.0).filter { passesFilters($0, kind: kind) }
             guard !files.isEmpty, files.count <= Prefs.int("max\(Prefs.kindName(kind))FileCount") || Prefs.int("max\(Prefs.kindName(kind))FileCount") == 0 else { continue }
             let folder = list[0].1
-            ResultsModel.shared.enqueue(files, source: .folder(folder))
+            if Prefs.bool("showResultsFor\(Prefs.kindName(kind))Folders") { ResultsModel.shared.enqueue(files, source: .folder(folder)) }
+            else { Task { for f in files { _ = try? await Optimiser.run(f, source: .folder(folder)) } } }
         }
+    }
+
+    /// The pixel size of a video, read from its first track.
+    static func videoSize(_ url: URL) -> (Int, Int)? {
+        let box = SizeBox()
+        let sem = DispatchSemaphore(value: 0)
+        Task.detached {
+            if let t = try? await AVURLAsset(url: url).loadTracks(withMediaType: .video).first, let n = try? await t.load(.naturalSize) { box.value = (Int(abs(n.width)), Int(abs(n.height))) }
+            sem.signal()
+        }
+        _ = sem.wait(timeout: .now() + 3)
+        return box.value
     }
 
     private func watchedFolder(containing u: URL) -> String? {
@@ -103,6 +117,13 @@ final class FolderWatcher {
         let minKB = Int64(Prefs.int("min\(name)SizeKB")), maxMB = Int64(Prefs.int("max\(name)SizeMB"))
         if size < minKB * 1000 { return false }
         if maxMB > 0, size > maxMB * 1_000_000 { return false }
+        if kind == .video {
+            let minR = Prefs.int("minVideoResolution"), maxR = Prefs.int("maxVideoResolution")
+            if minR > 0 || maxR > 0, let dim = Self.videoSize(url) {
+                if min(dim.0, dim.1) < minR { return false }
+                if maxR > 0, max(dim.0, dim.1) > maxR { return false }
+            }
+        }
         if kind == .image || kind == .video {
             if kind == .image, let src = CGImageSourceCreateWithURL(url as CFURL, nil), let p = CGImageSourceCopyPropertiesAtIndex(src, 0, nil) as? [CFString: Any] {
                 let w = p[kCGImagePropertyPixelWidth] as? Int ?? 0, h = p[kCGImagePropertyPixelHeight] as? Int ?? 0
@@ -193,3 +214,5 @@ final class ClipboardWatcher {
         }
     }
 }
+
+private final class SizeBox: @unchecked Sendable { var value: (Int, Int)? }

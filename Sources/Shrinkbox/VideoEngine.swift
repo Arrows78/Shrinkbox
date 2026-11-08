@@ -278,18 +278,34 @@ enum VideoEngine {
         if let f = job.downscale, f < 1 { maxWidth = max(64, 800 * f) }
         gen.maximumSize = CGSize(width: maxWidth, height: 0)
         let out = Workspace.temp(ext: "gif", name: src.deletingPathExtension().lastPathComponent)
-        guard let dest = CGImageDestinationCreateWithURL(out as CFURL, "com.compuserve.gif" as CFString, count, nil) else { throw ShrinkError.failed(L("Cannot write the GIF")) }
-        CGImageDestinationSetProperties(dest, [kCGImagePropertyGIFDictionary: [kCGImagePropertyGIFLoopCount: 0]] as CFDictionary)
-        let frameProps = [kCGImagePropertyGIFDictionary: [kCGImagePropertyGIFDelayTime: 1 / fps]] as CFDictionary
+        var frames: [CGImage] = []
         for i in 0..<count {
             try Task.checkCancellation()
             let time = CMTime(seconds: Double(i) / fps, preferredTimescale: 600)
             guard let result = try? await gen.image(at: time) else { continue }
             var image = result.image
             if let c = job.crop { image = (try? ImageEngine.apply(c, to: image)) ?? image }
-            CGImageDestinationAddImage(dest, image, frameProps)
-            progress?(Double(i + 1) / Double(count))
+            frames.append(image)
+            progress?(Double(i + 1) / Double(count) * 0.8)
         }
+        guard !frames.isEmpty else { throw ShrinkError.failed(L("Cannot write the GIF")) }
+        // gifski gives the best colours; without it ImageIO writes the frames.
+        if let gifski = Tool.gifski.url {
+            let dir = Workspace.temp(ext: "", name: "frames").deletingLastPathComponent()
+            var paths: [String] = []
+            for (i, f) in frames.enumerated() {
+                let u = dir.appendingPathComponent(String(format: "frame%05d.png", i))
+                try ImageEngine.writeImageIO(f, type: "public.png", properties: [:], quality: 1, to: u); paths.append(u.path)
+            }
+            let quality = max(20, 100 - Int(job.level.strength * 70))
+            let r = try await Run.process(gifski, ["--fps", String(Int(fps)), "--quality", String(quality), "--quiet", "-o", out.path] + paths)
+            try? FileManager.default.removeItem(at: dir)
+            if r.status == 0, Files.size(out) > 0 { progress?(1); return out }
+        }
+        guard let dest = CGImageDestinationCreateWithURL(out as CFURL, "com.compuserve.gif" as CFString, frames.count, nil) else { throw ShrinkError.failed(L("Cannot write the GIF")) }
+        CGImageDestinationSetProperties(dest, [kCGImagePropertyGIFDictionary: [kCGImagePropertyGIFLoopCount: 0]] as CFDictionary)
+        let frameProps = [kCGImagePropertyGIFDictionary: [kCGImagePropertyGIFDelayTime: 1 / fps]] as CFDictionary
+        for f in frames { CGImageDestinationAddImage(dest, f, frameProps) }
         guard CGImageDestinationFinalize(dest) else { throw ShrinkError.failed(L("Cannot write the GIF")) }
         if let g = Tool.gifsicle.url {
             let tmp = Workspace.temp(ext: "gif", name: "opt")
@@ -303,6 +319,12 @@ enum VideoEngine {
 
     /// A copy without metadata, re-muxed without re-encoding.
     static func stripMetadata(_ src: URL) async throws -> URL {
+        if let exif = Tool.exiftool.url {
+            let out = Workspace.temp(ext: src.pathExtension, name: src.deletingPathExtension().lastPathComponent)
+            try FileManager.default.copyItem(at: src, to: out)
+            let r = try await Run.process(exif, ["-all=", "-overwrite_original", "-q", out.path])
+            if r.status == 0 { return out }
+        }
         let asset = AVURLAsset(url: src)
         let ext = src.pathExtension.lowercased()
         guard canRead(ext), let session = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetPassthrough) else {
