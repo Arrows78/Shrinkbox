@@ -33,7 +33,18 @@ final class ResultsPanel {
         cursorTimer = Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { _ in MainActor.assumeIsolated { ResultsPanel.shared.followCursor() } }
     }
 
+    private var clearTask: Task<Void, Never>?
+
+    /// With many results on screen (the compact layout), the whole stack goes after a quiet while.
+    private func armClear() {
+        clearTask?.cancel()
+        guard ResultsModel.shared.compact, !ResultsModel.shared.items.isEmpty else { return }
+        let seconds = Prefs.int("autoClearAllCompactResultsAfter")
+        clearTask = Task { try? await Task.sleep(nanoseconds: UInt64(seconds) * 1_000_000_000); if !Task.isCancelled, ResultsModel.shared.items.allSatisfy({ !$0.isBusy }) { ResultsModel.shared.clearAll() } }
+    }
+
     func refresh() {
+        armClear()
         let items = ResultsModel.shared.items
         guard Prefs.bool("enableFloatingResults"), !items.isEmpty else { panel?.orderOut(nil); return }
         if panel == nil {
@@ -95,6 +106,7 @@ struct DropZoneView: View {
                 Text(state.hint).font(.system(size: 11)).foregroundStyle(.secondary)
             }
             .frame(width: 260, height: 130)
+            .background(Color.black.opacity(0.55), in: RoundedRectangle(cornerRadius: 22, style: .continuous))
             .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
             .overlay(RoundedRectangle(cornerRadius: 22, style: .continuous).strokeBorder(state.targeted ? Color.accentColor : Color.white.opacity(0.2), style: StrokeStyle(lineWidth: state.targeted ? 2 : 1, dash: [6, 4])))
             .scaleEffect(state.targeted ? 1.04 : 1)
@@ -120,6 +132,7 @@ private struct PresetZonesRow: View {
                 }
                 .frame(width: 74, height: 62)
                 .background(state.hoveredZone == z.id ? Color.accentColor.opacity(0.5) : Color.clear, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                .background(Color.black.opacity(0.55), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
                 .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
                 .onDrop(of: [.fileURL], isTargeted: Binding(get: { state.hoveredZone == z.id }, set: { state.hoveredZone = $0 ? z.id : (state.hoveredZone == z.id ? nil : state.hoveredZone) })) { providers in
                     DropZone.handle(providers, zone: z); return true

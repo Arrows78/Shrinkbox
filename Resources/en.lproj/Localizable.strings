@@ -70,13 +70,11 @@
 "Clipboard" = "Clipboard";
 "Close" = "Close";
 "Command line" = "Command line";
-"Compact action buttons" = "Compact action buttons";
 "Compatibility" = "Compatibility";
 "Complete metadata removal" = "Complete metadata removal";
 "Compression" = "Compression";
 "Compression above 80% drops every 4th, 3rd or 2nd frame of animated GIFs" = "Compression above 80% drops every 4th, 3rd or 2nd frame of animated GIFs";
 "Convert audio to AAC" = "Convert audio to AAC";
-"Convert HDR to SDR" = "Convert HDR to SDR";
 "Convert to…" = "Convert to…";
 "Convert to AAC (M4A)" = "Convert to AAC (M4A)";
 "Convert to JPEG" = "Convert to JPEG";
@@ -97,7 +95,6 @@
 "Delete identifiable metadata such as the camera, the location and the date" = "Delete identifiable metadata such as the camera, the location and the date";
 "Delete working files older than" = "Delete working files older than";
 "Dismiss" = "Dismiss";
-"Dismiss a result dragged out" = "Dismiss a result dragged out";
 "Done" = "Done";
 "Downscale" = "Downscale";
 "Downscale to %d%%" = "Downscale to %d%%";
@@ -318,3 +315,5 @@
 "Resume automatic optimisations" = "Resume automatic optimisations";
 "Optimising aggressively" = "Optimising aggressively";
 "Copied" = "Copied";
+"Show Shrinkbox in screenshots" = "Show Shrinkbox in screenshots";
+"Otherwise its windows stay out of screenshots and screen sharing" = "Otherwise its windows stay out of screenshots and screen sharing";

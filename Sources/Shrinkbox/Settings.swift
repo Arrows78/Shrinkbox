@@ -45,6 +45,7 @@ enum Prefs {
         add("workdirCleanupDays", "Delete working files older than", group: "General", section: "Working directory", .int(0...365), "7", help: "In days. 0 keeps everything")
         add("showMenubarIcon", "Menu bar icon", group: "General", section: "Appearance", .bool, "true")
         add("pauseAutomations", "Pause automatic optimisations", group: "General", section: "Appearance", .bool, "false")
+        add("allowShrinkboxInScreenshots", "Show Shrinkbox in screenshots", group: "General", section: "Appearance", .bool, "false", help: "Otherwise its windows stay out of screenshots and screen sharing")
         // Clipboard
         add("enableClipboardOptimiser", "Enable clipboard optimiser", group: "Clipboard", section: "Clipboard", .bool, "true", help: "Watch copied data and optimise it automatically")
         add("optimiseTIFF", "TIFF data", group: "Clipboard", section: "Clipboard", .bool, "true", help: "Often from design apps, sometimes better left alone")
@@ -76,7 +77,6 @@ enum Prefs {
         }
         // Images
         add("imageCompression", "Compression", group: "Images", section: "Optimisation rules", .text, "custom:30", help: compressionHelp)
-        add("convertHDRToSDR", "Convert HDR to SDR", group: "Images", section: "Optimisation rules", .bool, "false")
         add("gifFrameDropBehaviour", "GIF frame dropping", group: "Images", section: "Optimisation rules", .choice(["playFaster", "keepDuration"]), "playFaster", help: "Compression above 80% drops every 4th, 3rd or 2nd frame of animated GIFs")
         add("copyImageFilePath", "Copy image paths", group: "Images", section: "File names", .bool, "true", help: "When copying optimised image data, also copy the file path")
         add("formatsToConvertToJPEG", "Convert to JPEG", group: "Images", section: "Compatibility", .multi(["webp", "avif", "heic", "jxl", "bmp", "tiff"]), "avif,bmp,heic,webp")
@@ -142,9 +142,7 @@ enum Prefs {
         add("autoHideFloatingResultsAfter", "Hide file results after", group: "Floating Results", section: "Timing", .int(2...3600), "30", help: "In seconds")
         add("autoHideClipboardResultAfter", "Hide clipboard results after", group: "Floating Results", section: "Timing", .int(2...3600), "10", help: "In seconds")
         add("autoClearAllCompactResultsAfter", "Clear all compact results after", group: "Floating Results", section: "Timing", .int(5...7200), "120", help: "In seconds")
-        add("dismissResultOnDrop", "Dismiss a result dragged out", group: "Floating Results", section: "Behaviour", .bool, "true")
         add("floatingResultActions", "Action buttons", group: "Floating Results", section: "Buttons", .multi(actionIDs), "downscale,compression,crop,share,restoreOptimise")
-        add("compactResultActions", "Compact action buttons", group: "Floating Results", section: "Buttons", .multi(actionIDs), "downscale,compression,crop,quickLook,restoreOptimise,showInFinder,saveAs,copyToClipboard,share")
         // Agents
         add("mcpAcceptChanges", "Accept changes from agents", group: "Agents", section: "MCP", .bool, "true", help: "Optimising files, changing settings, saving pipelines. Reading stays allowed either way")
         add("mcpAllowScriptSteps", "Allow agents to write script steps", group: "Agents", section: "MCP", .bool, "false", help: "A script step runs arbitrary code")

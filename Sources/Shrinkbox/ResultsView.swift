@@ -8,7 +8,7 @@ struct ResultsView: View {
 
     var body: some View {
         VStack(alignment: .trailing, spacing: 8) {
-            if model.items.count > 1, Prefs.bool("showCopyClearButtons") || true {
+            if model.items.count > 1 {
                 HStack(spacing: 6) {
                     Spacer()
                     Pill(title: "Copy all", symbol: "doc.on.doc") { model.copyAll() }
@@ -32,7 +32,7 @@ private struct Pill: View {
     var body: some View {
         Button(action: action) {
             Label(title, systemImage: symbol).font(.system(size: 11, weight: .medium)).padding(.horizontal, 10).padding(.vertical, 5)
-                .background(.ultraThinMaterial, in: Capsule()).overlay(Capsule().strokeBorder(Color.white.opacity(0.12), lineWidth: 0.5))
+                .background(Color.black.opacity(0.55), in: Capsule()).background(.ultraThinMaterial, in: Capsule()).overlay(Capsule().strokeBorder(Color.white.opacity(0.12), lineWidth: 0.5))
         }.buttonStyle(.plain)
     }
 }
@@ -54,10 +54,10 @@ struct SizeLine: View {
     @ObservedObject var item: ResultItem
     var body: some View {
         switch item.state {
-        case .waiting: Text("Waiting").foregroundStyle(.secondary)
+        case .waiting: Text("Waiting").foregroundStyle(.white.opacity(0.7))
         case .running(let p):
             VStack(alignment: .leading, spacing: 3) {
-                Text(verbatim: item.label ?? L("Optimising…")).foregroundStyle(.secondary)
+                Text(verbatim: item.label ?? L("Optimising…")).foregroundStyle(.white.opacity(0.7))
                 ProgressView(value: p > 0 ? p : nil).progressViewStyle(.linear).tint(SettingsStyle.accent)
             }
         case .done:
@@ -67,9 +67,9 @@ struct SizeLine: View {
                     Text(verbatim: o.percent > 0 ? "-\(o.percent)%" : "0%").fontWeight(.semibold).foregroundStyle(o.percent > 0 ? Color.green : .secondary)
                 }
             }
-        case .skipped(let m): Text(verbatim: m).foregroundStyle(.secondary)
+        case .skipped(let m): Text(verbatim: m).foregroundStyle(.white.opacity(0.7))
         case .failed(let m): Text(verbatim: m).foregroundStyle(.orange).lineLimit(2)
-        case .restored: Text("Original restored").foregroundStyle(.secondary)
+        case .restored: Text("Original restored").foregroundStyle(.white.opacity(0.7))
         }
     }
 }
@@ -95,8 +95,9 @@ struct ResultCard: View {
             }
         }
         .padding(10)
+        .background(Color.black.opacity(0.55), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
         .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-        .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(Color.white.opacity(0.1), lineWidth: 0.5))
+        .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(Color.white.opacity(0.12), lineWidth: 0.5))
         .shadow(color: .black.opacity(0.3), radius: 10, y: 4)
         .onHover { hovering = $0; if $0 { model.holdOpen(item) } else if !item.isBusy { model.scheduleHide(item) } }
     }
@@ -117,8 +118,9 @@ struct CompactRow: View {
             Menu { ActionMenu(item: item) } label: { Image(systemName: "ellipsis.circle") }.menuStyle(.borderlessButton).menuIndicator(.hidden).fixedSize()
         }
         .padding(.horizontal, 10).padding(.vertical, 7)
+        .background(Color.black.opacity(0.55), in: Capsule())
         .background(.regularMaterial, in: Capsule())
-        .overlay(Capsule().strokeBorder(Color.white.opacity(0.1), lineWidth: 0.5))
+        .overlay(Capsule().strokeBorder(Color.white.opacity(0.12), lineWidth: 0.5))
         .onDrag { NSItemProvider(object: item.current as NSURL) }
     }
 }

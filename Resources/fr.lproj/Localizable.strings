@@ -70,13 +70,11 @@
 "Clipboard" = "Presse-papiers";
 "Close" = "Fermer";
 "Command line" = "Ligne de commande";
-"Compact action buttons" = "Boutons d’action compacts";
 "Compatibility" = "Compatibilité";
 "Complete metadata removal" = "Suppression complète des métadonnées";
 "Compression" = "Compression";
 "Compression above 80% drops every 4th, 3rd or 2nd frame of animated GIFs" = "Au-delà de 80 %, la compression retire une image sur 4, 3 ou 2 des GIF animés";
 "Convert audio to AAC" = "Convertir l’audio en AAC";
-"Convert HDR to SDR" = "Convertir le HDR en SDR";
 "Convert to…" = "Convertir en…";
 "Convert to AAC (M4A)" = "Convertir en AAC (M4A)";
 "Convert to JPEG" = "Convertir en JPEG";
@@ -97,7 +95,6 @@
 "Delete identifiable metadata such as the camera, the location and the date" = "Supprime les métadonnées identifiantes comme l’appareil, le lieu et la date";
 "Delete working files older than" = "Supprimer les fichiers de travail plus anciens que";
 "Dismiss" = "Fermer";
-"Dismiss a result dragged out" = "Fermer un résultat glissé hors de la pile";
 "Done" = "Terminé";
 "Downscale" = "Réduire";
 "Downscale to %d%%" = "Réduire à %d %%";
@@ -318,3 +315,5 @@
 "Resume automatic optimisations" = "Reprendre les optimisations automatiques";
 "Optimising aggressively" = "Optimisation agressive en cours";
 "Copied" = "Copié";
+"Show Shrinkbox in screenshots" = "Afficher Shrinkbox dans les captures d’écran";
+"Otherwise its windows stay out of screenshots and screen sharing" = "Sinon, ses fenêtres restent hors des captures d’écran et du partage d’écran";

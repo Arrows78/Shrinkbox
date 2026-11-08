@@ -70,13 +70,11 @@ Clear the floating results	Borrar los resultados flotantes	Schwebende Ergebnisse
 Clipboard	Portapapeles	Zwischenablage
 Close	Cerrar	Schließen
 Command line	Línea de comandos	Befehlszeile
-Compact action buttons	Botones de acción compactos	Kompakte Aktionsschaltflächen
 Compatibility	Compatibilidad	Kompatibilität
 Complete metadata removal	Eliminación completa de metadatos	Vollständiges Entfernen der Metadaten
 Compression	Compresión	Komprimierung
 Compression above 80% drops every 4th, 3rd or 2nd frame of animated GIFs	Por encima del 80 %, la compresión elimina uno de cada 4, 3 o 2 fotogramas de los GIF animados	Über 80 % entfernt die Komprimierung jedes 4., 3. oder 2. Bild animierter GIFs
 Convert audio to AAC	Convertir el audio a AAC	Audio in AAC umwandeln
-Convert HDR to SDR	Convertir HDR a SDR	HDR in SDR umwandeln
 Convert to…	Convertir a…	Konvertieren in…
 Convert to AAC (M4A)	Convertir a AAC (M4A)	In AAC (M4A) umwandeln
 Convert to JPEG	Convertir a JPEG	In JPEG umwandeln
@@ -97,7 +95,6 @@ Cropping to %@	Recortando a %@	Zuschneiden auf %@
 Delete identifiable metadata such as the camera, the location and the date	Elimina metadatos identificables como la cámara, la ubicación y la fecha	Entfernt identifizierende Metadaten wie Kamera, Ort und Datum
 Delete working files older than	Eliminar archivos de trabajo con más de	Arbeitsdateien löschen, die älter sind als
 Dismiss	Descartar	Schließen
-Dismiss a result dragged out	Descartar un resultado arrastrado fuera	Ein herausgezogenes Ergebnis schließen
 Done	Hecho	Fertig
 Downscale	Reducir	Verkleinern
 Downscale to %d%%	Reducir al %d %%	Auf %d %% verkleinern
@@ -318,3 +315,5 @@ Working directory path	Ruta del directorio de trabajo	Pfad des Arbeitsverzeichni
 Resume automatic optimisations	Reanudar las optimizaciones automáticas	Automatische Optimierungen fortsetzen
 Optimising aggressively	Optimizando de forma agresiva	Aggressive Optimierung läuft
 Copied	Copiado	Kopiert
+Show Shrinkbox in screenshots	Mostrar Shrinkbox en las capturas de pantalla	Shrinkbox in Screenshots anzeigen
+Otherwise its windows stay out of screenshots and screen sharing	Si no, sus ventanas quedan fuera de las capturas y de compartir pantalla	Sonst bleiben seine Fenster aus Screenshots und der Bildschirmfreigabe heraus
