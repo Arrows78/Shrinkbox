@@ -57,12 +57,15 @@ struct KeyCombo: Codable, Equatable {
 }
 
 enum HotkeyAction: String, CaseIterable, Identifiable {
-    case optimiseClipboard, optimiseSelection, togglePause, clearResults, showDropZone
+    case optimiseClipboard, optimiseClipboardAggressively, optimiseSelection, togglePause, skipNextClipboard, stopAll, clearResults, showDropZone
     var id: String { rawValue }
 
     var title: String {
         switch self {
         case .optimiseClipboard: L("Optimise the clipboard")
+        case .optimiseClipboardAggressively: L("Optimise the clipboard aggressively")
+        case .skipNextClipboard: L("Skip the next clipboard optimisation")
+        case .stopAll: L("Stop everything and clear the results")
         case .optimiseSelection: L("Optimise the Finder selection")
         case .togglePause: L("Pause or resume automatic optimisations")
         case .clearResults: L("Clear the floating results")
@@ -74,6 +77,9 @@ enum HotkeyAction: String, CaseIterable, Identifiable {
         let m = UInt32(controlKey | optionKey | cmdKey)
         switch self {
         case .optimiseClipboard: return KeyCombo(keyCode: UInt32(kVK_ANSI_O), modifiers: m, label: "O")
+        case .optimiseClipboardAggressively: return KeyCombo(keyCode: UInt32(kVK_ANSI_A), modifiers: m, label: "A")
+        case .skipNextClipboard: return KeyCombo(keyCode: UInt32(kVK_ANSI_S), modifiers: m, label: "S")
+        case .stopAll: return KeyCombo(keyCode: UInt32(kVK_ANSI_X), modifiers: m, label: "X")
         case .optimiseSelection: return KeyCombo(keyCode: UInt32(kVK_ANSI_F), modifiers: m, label: "F")
         case .togglePause: return KeyCombo(keyCode: UInt32(kVK_ANSI_P), modifiers: m, label: "P")
         case .clearResults: return KeyCombo(keyCode: UInt32(kVK_ANSI_C), modifiers: m, label: "C")

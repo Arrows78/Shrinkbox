@@ -221,7 +221,7 @@ struct ResultCard: View {
         .shadow(color: .black.opacity(hovering ? 0.45 : 0.32), radius: hovering ? 16 : 10, y: hovering ? 8 : 5)
         .scaleEffect(hovering ? 1.012 : 1)
         .animation(.spring(response: 0.3, dampingFraction: 0.8), value: hovering)
-        .onHover { hovering = $0; if $0 { model.holdOpen(item) } else if !item.isBusy { model.scheduleHide(item) } }
+        .onHover { hovering = $0; if $0 { model.hovered = item.id; model.holdOpen(item) } else { if model.hovered == item.id { model.hovered = nil }; if !item.isBusy { model.scheduleHide(item) } } }
         .contextMenu { ActionMenu(item: item) }
     }
 }

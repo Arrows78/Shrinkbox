@@ -40,6 +40,8 @@ final class ResultItem: ObservableObject, Identifiable {
 final class ResultsModel: ObservableObject {
     static let shared = ResultsModel()
     @Published var items: [ResultItem] = []
+    /// The card under the pointer, for the keys that act on it.
+    var hovered: UUID?
     /// Called after each change so the panel can resize and place itself.
     var changed: (() -> Void)?
 
@@ -134,6 +136,12 @@ final class ResultsModel: ObservableObject {
         item.task?.cancel(); item.hideTask?.cancel()
         items.removeAll { $0.id == item.id }
         changed?()
+    }
+
+    /// Stops everything that runs and dismisses every card.
+    func stopAll() {
+        for i in items { i.task?.cancel() }
+        clearAll()
     }
 
     func clearAll() {

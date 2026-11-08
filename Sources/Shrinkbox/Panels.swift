@@ -46,6 +46,7 @@ final class ResultsPanel {
     func refresh() {
         armClear()
         let items = ResultsModel.shared.items
+        ResultKeys.shared.update(visible: Prefs.bool("enableFloatingResults") && !items.isEmpty)
         guard Prefs.bool("enableFloatingResults"), !items.isEmpty else { panel?.orderOut(nil); return }
         if panel == nil {
             let p = FloatingPanel(size: NSSize(width: 360, height: 200))
