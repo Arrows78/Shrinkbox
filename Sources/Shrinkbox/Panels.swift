@@ -259,11 +259,28 @@ enum DropZone {
 
     private static var dragCount = 0
 
+    /// The drag pasteboard keeps what the last drag put on it, so only a change since the mouse went down means a drag
+    /// that started now carries something.
+    private static var downCount = NSPasteboard(name: .drag).changeCount
+
+    static func mouseDown() { downCount = NSPasteboard(name: .drag).changeCount }
+
+    /// The files a drag in progress carries that Shrinkbox can optimise: nothing for a window, a selection of text or a
+    /// file of another kind.
+    static func draggedMedia() -> [URL] {
+        let pb = NSPasteboard(name: .drag)
+        guard pb.changeCount != downCount,
+              let urls = pb.readObjects(forClasses: [NSURL.self], options: [.urlReadingFileURLsOnly: true]) as? [URL], !urls.isEmpty else { return [] }
+        return urls.filter { u in
+            var isDir: ObjCBool = false
+            if FileManager.default.fileExists(atPath: u.path, isDirectory: &isDir), isDir.boolValue { return true }   // a folder may hold some
+            return Media.kind(of: u) != nil
+        }
+    }
+
     /// Called by the app's mouse monitors while files are dragged.
     static func dragMoved(control: Bool, option: Bool) {
-        guard Prefs.bool("enableDropZone") else { return }
-        let pb = NSPasteboard(name: .drag)
-        guard pb.canReadObject(forClasses: [NSURL.self], options: nil) else { return }
+        guard Prefs.bool("enableDropZone"), !draggedMedia().isEmpty else { return }
         if Prefs.bool("onlyShowDropZoneOnOption") && !option && panel?.isVisible != true { return }
         state.showPresets = control || (Prefs.bool("onlyShowPresetZonesOnControlTapped") && state.showPresets)
         show()

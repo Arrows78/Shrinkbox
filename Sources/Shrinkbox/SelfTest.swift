@@ -168,6 +168,7 @@ enum SelfTest {
         check("photos: adaptive keeps a landscape ratio for a landscape photo and turns it for a portrait one", PhotosBridge.orient("4:3", as: "adaptive", size: (3000, 2000)) == "4:3" && PhotosBridge.orient("4:3", as: "adaptive", size: (2000, 3000)) == "3:4")
         check("photos: the script asks for originals and the right count", PhotosBridge.script(folder: "/tmp/x", count: 3).contains("with using originals") && PhotosBridge.script(folder: "/tmp/x", count: 3).contains("n > 3"))
         check("photos: a length limit becomes a crop step", { Prefs.set("maxPhotosLength", "1600"); defer { Prefs.reset("maxPhotosLength") }; return PhotosBridge.steps() == [.crop(spec: "1600", longEdge: true, smart: false, location: nil)] }() && PhotosBridge.steps().isEmpty)
+        check("drop zone: nothing is dragged when the mouse has not moved a file", DropZone.draggedMedia().isEmpty)
         check("shortcuts: defaults are distinct and need a modifier", Set(HotkeyAction.allCases.map { $0.defaultCombo.display }).count == HotkeyAction.allCases.count && HotkeyAction.allCases.allSatisfy { $0.defaultCombo.modifiers != 0 })
         check("reference: the guide names every step", ["optimise", "downscale", "convert", "crop", "targetSize", "stripExif", "watermark", "changeSpeed", "normalize", "runScript", "fork"].allSatisfy { Reference.pipelineGuide.contains($0) })
     }

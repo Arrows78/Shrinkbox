@@ -207,6 +207,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     // MARK: Dragging
 
     private func setupDragMonitors() {
+        monitors.append(NSEvent.addGlobalMonitorForEvents(matching: .leftMouseDown) { _ in
+            DispatchQueue.main.async { MainActor.assumeIsolated { DropZone.mouseDown() } }
+        } as Any)
         monitors.append(NSEvent.addGlobalMonitorForEvents(matching: .leftMouseDragged) { e in
             let flags = e.modifierFlags
             DispatchQueue.main.async { MainActor.assumeIsolated { DropZone.dragMoved(control: flags.contains(.control), option: flags.contains(.option)) } }
