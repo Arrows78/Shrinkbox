@@ -22,18 +22,31 @@ for lang in ("es", "de"):
     for k in sorted(keys - known): errors.append(f"{lang}: unknown key \"{k}\"")
 
 # Literals that are not words to translate: symbols, units, code, brand names.
-ignore = {"", "CPU", "RAM", "Claude Code", "Codex", "AAPL", "x", "·", "…"}
-pat = re.compile(r'\b(?:L|Text|Button|Label|Toggle|Section|TextField|Stepper|Picker|Slider|accessibilityLabel)\(\s*"((?:[^"\\]|\\.)*)"')
+ignore = {"", "x", "·", "…", "C", "D", "F", "O", "P", "audio", "video", "shrinkbox.audio", "MCP"}
+# The command line speaks English: its usage and syntax errors are not translated.
+cli_only = ("Usage:", "Give ", "--size is required", "Expected key", "capFps needs", "changeSpeed needs", "lowerBitrate needs", "crop needs", "downscale needs",
+            "A pipeline named", "A zone with this name", "No saved pipeline with this name", "Unknown step", "%@ needs", "%@ is needed %@")
+pat = re.compile(r'\b(?:L|Text|Button|Label|Toggle|Section|TextField|Stepper|Picker|Slider|accessibilityLabel|SettingsToggle|SettingsNote|help)\(\s*"((?:[^"\\]|\\.)*)"'
+                 r'|\b(?:title|subtitle|label):\s*"((?:[^"\\]|\\.)*)"')
+# The settings catalogue: add("key", "Title", group:, section: "…", …, help: "…") is shown through LocalizedStringKey.
+catalogue = re.compile(r'add\("[^"]+",\s*"((?:[^"\\]|\\.)*)",\s*group:\s*"[^"]*",\s*section:\s*"((?:[^"\\]|\\.)*)"(?:.*?help:\s*"((?:[^"\\]|\\.)*)")?')
+# Titles of the settings panes: `case .images: "Images"`.
+panes = re.compile(r'case \.\w+: "((?:[^"\\]|\\.)*)"$', re.M)
 used = set()
 for f in sorted((root / "Sources/Shrinkbox").glob("*.swift")):
     if f.name in ("SelfTest.swift",):
         continue
-    for m in pat.finditer(f.read_text()):
-        key = m.group(1)
+    text = f.read_text()
+    found = [m.group(1) if m.group(1) is not None else m.group(2) for m in pat.finditer(text)]
+    if f.name == "Settings.swift":
+        for m in catalogue.finditer(text): found += [g for g in m.groups() if g is not None]
+    if f.name == "SettingsKit.swift":
+        found += panes.findall(text.split("var group:")[0])
+    for key in found:
         if "\\(" in key:
             continue   # interpolated: listed manually, see header
         used.add(key)
-        if key not in known and key not in ignore and not re.fullmatch(r"[\W\d_]*", key) and not key.startswith("="):
+        if key not in known and key not in ignore and not key.startswith(cli_only) and not re.fullmatch(r"[\W\d_]*", key) and not key.startswith("="):
             errors.append(f"{f.name}: no French translation for \"{key}\"")
 
 for e in errors:

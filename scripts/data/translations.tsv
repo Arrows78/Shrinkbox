@@ -1,0 +1,320 @@
+%@ does not exist	%@ no existe	%@ existiert nicht
+%@ is needed %@. Install it with Homebrew: brew install %@	Se necesita %@ %@. Instálalo con Homebrew: brew install %@	%@ wird %@ benötigt. Installiere es mit Homebrew: brew install %@
+%@ is not a supported file	%@ no es un archivo compatible	%@ ist keine unterstützte Datei
+%@ must be %@	%@ debe ser %@	%@ muss %@ sein
+%@ must be a number from %g to %g	%@ debe ser un número de %g a %g	%@ muss eine Zahl von %g bis %g sein
+%@ must be a whole number from %d to %d	%@ debe ser un número entero de %d a %d	%@ muss eine ganze Zahl von %d bis %d sein
+%@ must be one of: %@	%@ debe ser uno de: %@	%@ muss einer dieser Werte sein: %@
+%@ must be true or false	%@ debe ser true o false	%@ muss true oder false sein
+%@: “%@” is not one of: %@	%@: «%@» no es uno de: %@	%@: „%@“ ist keiner dieser Werte: %@
+%d of %d	%d de %d	%d von %d
+300 leaves images alone, 72 suits screens, 48 is the smallest	300 no toca las imágenes, 72 sirve para pantallas, 48 es el más pequeño	300 lässt Bilder unverändert, 72 passt für Bildschirme, 48 ist am kleinsten
+A pipeline chains steps like crop, convert and move. Save one below, or with the command line.	Un pipeline encadena pasos como recortar, convertir y mover. Guarda uno abajo o desde la línea de comandos.	Eine Pipeline verkettet Schritte wie Zuschneiden, Konvertieren und Verschieben. Speichere unten eine oder per Befehlszeile.
+A script step runs arbitrary code	Un paso de script ejecuta código arbitrario	Ein Skriptschritt führt beliebigen Code aus
+A specific folder	Una carpeta concreta	Ein bestimmter Ordner
+About	Acerca de	Info
+Accept changes from agents	Aceptar cambios de los agentes	Änderungen von Agenten akzeptieren
+Accumulate optimised images in the clipboard	Acumular las imágenes optimizadas en el portapapeles	Optimierte Bilder in der Zwischenablage sammeln
+Accumulation timeout	Tiempo de acumulación	Zeitlimit zum Sammeln
+Action buttons	Botones de acción	Aktionsschaltflächen
+Add folder…	Añadir carpeta…	Ordner hinzufügen…
+After	Después	Danach
+Agents	Agentes	Agenten
+Aggressive optimisation	Optimización agresiva	Aggressive Optimierung
+Allow agents to write script steps	Permitir que los agentes escriban pasos de script	Agenten erlauben, Skriptschritte zu schreiben
+Already optimised	Ya optimizado	Bereits optimiert
+Always use the compact layout	Usar siempre el diseño compacto	Immer das kompakte Layout verwenden
+Animated WebP files are left as they are	Los archivos WebP animados se dejan como están	Animierte WebP-Dateien bleiben unverändert
+Any	Cualquiera	Alle
+Appearance	Apariencia	Erscheinungsbild
+Attach a pipeline to a folder, the clipboard or the drop zone with “shrinkbox pipeline attach”.	Asocia un pipeline a una carpeta, al portapapeles o a la zona de soltado con «shrinkbox pipeline attach».	Verknüpfe eine Pipeline mit einem Ordner, der Zwischenablage oder der Ablagezone mit „shrinkbox pipeline attach“.
+Audio	Audio	Audio
+Audio files	Archivos de audio	Audiodateien
+Auto hide floating results	Ocultar automáticamente los resultados flotantes	Schwebende Ergebnisse automatisch ausblenden
+Automation	Automatización	Automatisierung
+Automations	Automatizaciones	Automatisierungen
+AVIF encoding failed	Falló la codificación AVIF	AVIF-Kodierung fehlgeschlagen
+AVIF output	Salida AVIF	AVIF-Ausgabe
+Batch finished	Lote terminado	Stapel abgeschlossen
+Batch mode	Modo por lotes	Stapelmodus
+Batch mode file threshold	Umbral de archivos del modo por lotes	Dateischwelle für den Stapelmodus
+Batch optimisation	Optimización por lotes	Stapeloptimierung
+Before	Antes	Vorher
+Behaviour	Comportamiento	Verhalten
+Bottom left	Abajo a la izquierda	Unten links
+Bottom right	Abajo a la derecha	Unten rechts
+Bundle identifiers, comma separated. Clipboard optimisation is skipped while one of them is in front	Identificadores de bundle separados por comas. Se omite la optimización del portapapeles mientras una de ellas esté en primer plano	Bundle-Kennungen, durch Kommas getrennt. Die Optimierung der Zwischenablage wird übersprungen, solange eine davon im Vordergrund ist
+But no less than	Pero no menos de	Aber nicht weniger als
+Buttons	Botones	Schaltflächen
+Cancelled	Cancelado	Abgebrochen
+Cannot crop the image	No se puede recortar la imagen	Das Bild kann nicht zugeschnitten werden
+Cannot decode the image	No se puede decodificar la imagen	Das Bild kann nicht dekodiert werden
+Cannot draw the watermark	No se puede dibujar la marca de agua	Das Wasserzeichen kann nicht gezeichnet werden
+Cannot encode the audio	No se puede codificar el audio	Das Audio kann nicht kodiert werden
+Cannot encode the video	No se puede codificar el vídeo	Das Video kann nicht kodiert werden
+Cannot load the compression filter	No se puede cargar el filtro de compresión	Der Komprimierungsfilter kann nicht geladen werden
+Cannot reach the target size	No se puede alcanzar el tamaño objetivo	Die Zielgröße kann nicht erreicht werden
+Cannot read %@	No se puede leer %@	%@ kann nicht gelesen werden
+Cannot read the audio	No se puede leer el audio	Das Audio kann nicht gelesen werden
+Cannot read the image	No se puede leer la imagen	Das Bild kann nicht gelesen werden
+Cannot read the video	No se puede leer el vídeo	Das Video kann nicht gelesen werden
+Cannot remove the metadata	No se pueden eliminar los metadatos	Die Metadaten können nicht entfernt werden
+Cannot write %@	No se puede escribir %@	%@ kann nicht geschrieben werden
+Cannot write the GIF	No se puede escribir el GIF	Das GIF kann nicht geschrieben werden
+Cap frames per second	Limitar los fotogramas por segundo	Bilder pro Sekunde begrenzen
+Change the format	Cambiar el formato	Format ändern
+Check again	Comprobar de nuevo	Erneut prüfen
+Clear all	Borrar todo	Alle löschen
+Clear all compact results after	Borrar todos los resultados compactos después de	Alle kompakten Ergebnisse löschen nach
+Clear the floating results	Borrar los resultados flotantes	Schwebende Ergebnisse löschen
+Clipboard	Portapapeles	Zwischenablage
+Close	Cerrar	Schließen
+Command line	Línea de comandos	Befehlszeile
+Compact action buttons	Botones de acción compactos	Kompakte Aktionsschaltflächen
+Compatibility	Compatibilidad	Kompatibilität
+Complete metadata removal	Eliminación completa de metadatos	Vollständiges Entfernen der Metadaten
+Compression	Compresión	Komprimierung
+Compression above 80% drops every 4th, 3rd or 2nd frame of animated GIFs	Por encima del 80 %, la compresión elimina uno de cada 4, 3 o 2 fotogramas de los GIF animados	Über 80 % entfernt die Komprimierung jedes 4., 3. oder 2. Bild animierter GIFs
+Convert audio to AAC	Convertir el audio a AAC	Audio in AAC umwandeln
+Convert HDR to SDR	Convertir HDR a SDR	HDR in SDR umwandeln
+Convert to…	Convertir a…	Konvertieren in…
+Convert to AAC (M4A)	Convertir a AAC (M4A)	In AAC (M4A) umwandeln
+Convert to JPEG	Convertir a JPEG	In JPEG umwandeln
+Convert to MP3	Convertir a MP3	In MP3 umwandeln
+Convert to MP4	Convertir a MP4	In MP4 umwandeln
+Convert to PNG	Convertir a PNG	In PNG umwandeln
+Converting to %@	Convirtiendo a %@	Konvertiere in %@
+Copy	Copiar	Kopieren
+Copy all	Copiar todo	Alle kopieren
+Copy image paths	Copiar las rutas de las imágenes	Bildpfade kopieren
+Copy install command	Copiar el comando de instalación	Installationsbefehl kopieren
+Copy optimised files to the clipboard	Copiar los archivos optimizados al portapapeles	Optimierte Dateien in die Zwischenablage kopieren
+Copy to the clipboard	Copiar al portapapeles	In die Zwischenablage kopieren
+Copying images in the Finder gives file paths instead of image data	Copiar imágenes en el Finder da rutas de archivo en vez de los datos de la imagen	Beim Kopieren von Bildern im Finder entstehen Dateipfade statt Bilddaten
+Cover art	Carátula	Cover
+Crop	Recortar	Zuschneiden
+Cropping to %@	Recortando a %@	Zuschneiden auf %@
+Delete identifiable metadata such as the camera, the location and the date	Elimina metadatos identificables como la cámara, la ubicación y la fecha	Entfernt identifizierende Metadaten wie Kamera, Ort und Datum
+Delete working files older than	Eliminar archivos de trabajo con más de	Arbeitsdateien löschen, die älter sind als
+Dismiss	Descartar	Schließen
+Dismiss a result dragged out	Descartar un resultado arrastrado fuera	Ein herausgezogenes Ergebnis schließen
+Done	Hecho	Fertig
+Downscale	Reducir	Verkleinern
+Downscale to %d%%	Reducir al %d %%	Auf %d %% verkleinern
+Downscaling to %d%%	Reduciendo al %d %%	Verkleinere auf %d %%
+Drag files, paths and links to a global drop zone	Arrastra archivos, rutas y enlaces a una zona de soltado global	Ziehe Dateien, Pfade und Links in eine globale Ablagezone
+Drop files here	Suelta archivos aquí	Dateien hier ablegen
+Drop frames	Descartar fotogramas	Bilder auslassen
+Drop zone	Zona de soltado	Ablagezone
+Each new image is added to a file list so you can paste them all at once	Cada imagen nueva se añade a una lista de archivos para pegarlas todas a la vez	Jedes neue Bild wird einer Dateiliste hinzugefügt, damit du alle auf einmal einfügen kannst
+Edit audio with	Editar el audio con	Audio bearbeiten mit
+Edit images with	Editar las imágenes con	Bilder bearbeiten mit
+Edit PDFs with	Editar los PDF con	PDFs bearbeiten mit
+Edit videos with	Editar los vídeos con	Videos bearbeiten mit
+Edit with %@	Editar con %@	Mit %@ bearbeiten
+Edit with external app	Editar con una app externa	Mit externer App bearbeiten
+Empty: ~/Library/Caches/Shrinkbox	Vacío: ~/Library/Caches/Shrinkbox	Leer: ~/Library/Caches/Shrinkbox
+Enable audio auto-optimiser	Activar el optimizador automático de audio	Automatische Audiooptimierung aktivieren
+Enable clipboard optimiser	Activar el optimizador del portapapeles	Zwischenablage-Optimierer aktivieren
+Enable drop zone	Activar la zona de soltado	Ablagezone aktivieren
+Enable image auto-optimiser	Activar el optimizador automático de imágenes	Automatische Bildoptimierung aktivieren
+Enable PDF auto-optimiser	Activar el optimizador automático de PDF	Automatische PDF-Optimierung aktivieren
+Enable video auto-optimiser	Activar el optimizador automático de vídeo	Automatische Videooptimierung aktivieren
+Failures	Errores	Fehler
+ffmpeg failed	ffmpeg falló	ffmpeg ist fehlgeschlagen
+File handling	Gestión de archivos	Dateiverwaltung
+File names	Nombres de archivo	Dateinamen
+Files are processed on your Mac. The only network use is downloading a link you drop on the drop zone.	Los archivos se procesan en tu Mac. El único uso de red es descargar un enlace que sueltas en la zona de soltado.	Dateien werden auf deinem Mac verarbeitet. Das Netzwerk wird nur genutzt, um einen Link herunterzuladen, den du auf die Ablagezone ziehst.
+Fit under…	Ajustar por debajo de…	Unter … halten
+Fit under %@	Ajustar por debajo de %@	Unter %@ halten
+Fitting under %@	Ajustando por debajo de %@	Verkleinere unter %@
+Floating results	Resultados flotantes	Schwebende Ergebnisse
+Follow the cursor across screens	Seguir el cursor entre pantallas	Dem Cursor über Bildschirme folgen
+For example: crop(longEdge: 1600) -> convert(to: webp)	Por ejemplo: crop(longEdge: 1600) -> convert(to: webp)	Zum Beispiel: crop(longEdge: 1600) -> convert(to: webp)
+For files of type	Para archivos de tipo	Für Dateien vom Typ
+General	General	Allgemein
+GIF frame dropping	Descarte de fotogramas de GIF	Bildauslassung bei GIFs
+HEIC and AVIF data	Datos HEIC y AVIF	HEIC- und AVIF-Daten
+Hide button tooltips	Ocultar las descripciones de los botones	Schaltflächen-Tooltips ausblenden
+Hide clipboard results after	Ocultar los resultados del portapapeles después de	Zwischenablage-Ergebnisse ausblenden nach
+Hide file results after	Ocultar los resultados de archivos después de	Dateiergebnisse ausblenden nach
+Higher quality video to GIF conversion	Conversión de vídeo a GIF de mayor calidad	Hochwertigere Umwandlung von Video in GIF
+Hold ⌃ Control for presets	Mantén ⌃ Control para los ajustes preestablecidos	⌃ Control gedrückt halten für Voreinstellungen
+Hold ⌥ Option while dragging files to show the drop zone when it is set to need it, and hold ⌃ Control to show the preset zones.	Mantén ⌥ Opción mientras arrastras archivos para mostrar la zona de soltado cuando lo requiera, y ⌃ Control para mostrar las zonas preestablecidas.	Halte ⌥ Wahl beim Ziehen von Dateien gedrückt, um die Ablagezone anzuzeigen, wenn sie es verlangt, und ⌃ Control für die Voreinstellungszonen.
+Hold Control while dragging a file to the drop zone to see them.	Mantén Control mientras arrastras un archivo a la zona de soltado para verlas.	Halte Control gedrückt, während du eine Datei auf die Ablagezone ziehst, um sie zu sehen.
+Homebrew does this by itself. Otherwise, run the copied command in the Terminal.	Homebrew lo hace solo. Si no, ejecuta el comando copiado en la Terminal.	Homebrew macht das selbst. Andernfalls führe den kopierten Befehl im Terminal aus.
+Ignore images with extension	Ignorar imágenes con la extensión	Bilder mit der Endung ignorieren
+Ignore videos with extension	Ignorar vídeos con la extensión	Videos mit der Endung ignorieren
+Ignored apps	Apps ignoradas	Ignorierte Apps
+Image files	Archivos de imagen	Bilddateien
+Image resolution (0: automatic)	Resolución de imagen (0: automática)	Bildauflösung (0: automatisch)
+Images	Imágenes	Bilder
+Images are optimised as they appear in these folders	Las imágenes se optimizan en cuanto aparecen en estas carpetas	Bilder werden optimiert, sobald sie in diesen Ordnern erscheinen
+In days. 0 keeps everything	En días. 0 lo conserva todo	In Tagen. 0 behält alles
+In milliseconds. Increase it if files on iCloud Drive get optimised twice	En milisegundos. Auméntalo si los archivos de iCloud Drive se optimizan dos veces	In Millisekunden. Erhöhe den Wert, wenn Dateien auf iCloud Drive doppelt optimiert werden
+In seconds	En segundos	In Sekunden
+Invalid compression “%@”	Compresión «%@» no válida	Ungültige Komprimierung „%@“
+Invalid crop size “%@”	Tamaño de recorte «%@» no válido	Ungültige Zuschnittgröße „%@“
+Invalid regular expression “%@”	Expresión regular «%@» no válida	Ungültiger regulärer Ausdruck „%@“
+Invalid size	Tamaño no válido	Ungültige Größe
+Keep	Conservar	Behalten
+Keep all clipboard results	Conservar todos los resultados del portapapeles	Alle Zwischenablage-Ergebnisse behalten
+Keep color profile tags when stripping metadata	Conserva las etiquetas de perfil de color al eliminar los metadatos	Behält Farbprofil-Tags beim Entfernen der Metadaten
+Keep every frame	Conservar todos los fotogramas	Jedes Bild behalten
+Keep preset zones up after tapping Control	Mantener las zonas preestablecidas tras pulsar Control	Voreinstellungszonen nach Tippen auf Control behalten
+Keep the duration	Mantener la duración	Dauer beibehalten
+Layout	Diseño	Layout
+Log	Registro	Protokoll
+Lossless JPEG optimisation	Optimización JPEG sin pérdida	Verlustfreie JPEG-Optimierung
+Lossless PNG optimisation	Optimización PNG sin pérdida	Verlustfreie PNG-Optimierung
+Lossy PNG compression	Compresión PNG con pérdida	Verlustbehaftete PNG-Komprimierung
+Make it available as “shrinkbox”	Hacerlo disponible como «shrinkbox»	Als „shrinkbox“ verfügbar machen
+Maximum file size (MB)	Tamaño máximo de archivo (MB)	Maximale Dateigröße (MB)
+Maximum frame rate	Frecuencia de fotogramas máxima	Maximale Bildrate
+Maximum width and height (0: none)	Ancho y alto máximos (0: ninguno)	Maximale Breite und Höhe (0: keine)
+MCP	MCP	MCP
+MCP configuration	Configuración de MCP	MCP-Konfiguration
+Menu bar icon	Icono de la barra de menús	Menüleistensymbol
+Minimum file size (KB)	Tamaño mínimo de archivo (KB)	Minimale Dateigröße (KB)
+Minimum width and height	Ancho y alto mínimos	Minimale Breite und Höhe
+Name	Nombre	Name
+Name template for clipboard images	Plantilla de nombre para las imágenes del portapapeles	Namensvorlage für Zwischenablage-Bilder
+New pipeline	Nuevo pipeline	Neue Pipeline
+No audio track in %@	No hay pista de audio en %@	Keine Audiospur in %@
+No automation	Ninguna automatización	Keine Automatisierung
+No backup of the original	No hay copia de seguridad del original	Keine Sicherung des Originals
+No preset zone	Ninguna zona preestablecida	Keine Voreinstellungszone
+No preset zone yet. Add one in Settings › Automation.	Aún no hay zonas preestablecidas. Añade una en Ajustes › Automatización.	Noch keine Voreinstellungszone. Füge eine unter Einstellungen › Automatisierung hinzu.
+No saved pipeline	Ningún pipeline guardado	Keine gespeicherte Pipeline
+No supported file found	No se encontró ningún archivo compatible	Keine unterstützte Datei gefunden
+No video track in %@	No hay pista de vídeo en %@	Keine Videospur in %@
+None	Ninguno	Keine
+Not set	Sin definir	Nicht festgelegt
+Nothing	Nada	Nichts
+Nothing to change	Nada que cambiar	Nichts zu ändern
+Nothing to do	Nada que hacer	Nichts zu tun
+Off: Shrinkbox keeps optimising in the background without any window	Desactivado: Shrinkbox sigue optimizando en segundo plano, sin ventanas	Aus: Shrinkbox optimiert im Hintergrund weiter, ohne Fenster
+Often from design apps, sometimes better left alone	A menudo de apps de diseño; a veces es mejor dejarlas como están	Oft aus Design-Apps, manchmal besser unverändert lassen
+Open on GitHub	Abrir en GitHub	Auf GitHub öffnen
+Optimisation	Optimización	Optimierung
+Optimisation rules	Reglas de optimización	Optimierungsregeln
+Optimise	Optimizar	Optimieren
+Optimise again	Optimizar de nuevo	Erneut optimieren
+Optimise files…	Optimizar archivos…	Dateien optimieren…
+Optimise the clipboard	Optimizar el portapapeles	Zwischenablage optimieren
+Optimise the Finder selection	Optimizar la selección del Finder	Finder-Auswahl optimieren
+Optimising	Optimizando	Optimiere
+Optimising…	Optimizando…	Optimiere…
+Optimising files, changing settings, saving pipelines. Reading stays allowed either way	Optimizar archivos, cambiar ajustes, guardar pipelines. La lectura sigue permitida en ambos casos	Dateien optimieren, Einstellungen ändern, Pipelines speichern. Lesen bleibt in beiden Fällen erlaubt
+Optional tools	Herramientas opcionales	Optionale Werkzeuge
+Or drop on a preset	O suelta sobre un ajuste preestablecido	Oder auf einer Voreinstellung ablegen
+Original restored	Original restaurado	Original wiederhergestellt
+Originals are backed up first and can be restored	Los originales se guardan antes y se pueden restaurar	Originale werden zuerst gesichert und lassen sich wiederherstellen
+Otherwise it switches to compact with more than 5 results	Si no, cambia a compacto con más de 5 resultados	Sonst wird bei mehr als 5 Ergebnissen auf kompakt umgeschaltet
+Paste it into the settings of your AI app to let it use Shrinkbox.	Pégala en los ajustes de tu app de IA para que pueda usar Shrinkbox.	Füge sie in die Einstellungen deiner KI-App ein, damit sie Shrinkbox nutzen kann.
+Path	Ruta	Pfad
+Pause automatic optimisations	Pausar las optimizaciones automáticas	Automatische Optimierungen pausieren
+Pause or resume automatic optimisations	Pausar o reanudar las optimizaciones automáticas	Automatische Optimierungen pausieren oder fortsetzen
+PDF	PDF	PDF
+PDF files	Archivos PDF	PDF-Dateien
+PDFs	PDF	PDFs
+Pipeline guide	Guía de pipelines	Pipeline-Leitfaden
+Play faster	Reproducir más rápido	Schneller abspielen
+Playback speed change	Cambio de velocidad de reproducción	Änderung der Wiedergabegeschwindigkeit
+Position on screen	Posición en pantalla	Position auf dem Bildschirm
+Preserve color profile metadata	Conservar los metadatos del perfil de color	Farbprofil-Metadaten beibehalten
+Preserve file creation and modification dates	Conservar las fechas de creación y modificación	Erstellungs- und Änderungsdatum beibehalten
+Preset zones	Zonas preestablecidas	Voreinstellungszonen
+Press shortcut…	Pulsa el atajo…	Tastenkürzel drücken…
+Quick Look	Vista rápida	Übersicht
+Quit Shrinkbox	Salir de Shrinkbox	Shrinkbox beenden
+Re-optimisation loop detection window	Ventana de detección de bucles de reoptimización	Zeitfenster zur Erkennung von Re-Optimierungsschleifen
+Remove	Quitar	Entfernen
+Remove audio on optimised videos	Quitar el audio de los vídeos optimizados	Audio aus optimierten Videos entfernen
+Replace the original	Reemplazar el original	Original ersetzen
+Require pressing ⌥ Option to show the drop zone	Exigir pulsar ⌥ Opción para mostrar la zona de soltado	⌥ Wahl zum Anzeigen der Ablagezone verlangen
+Restore	Restaurar	Wiederherstellen
+Restore default settings	Restaurar los ajustes predeterminados	Standardeinstellungen wiederherstellen
+Restore or optimise	Restaurar u optimizar	Wiederherstellen oder optimieren
+Restore originals	Restaurar los originales	Originale wiederherstellen
+Restore the default	Restaurar el valor predeterminado	Standard wiederherstellen
+Restore the original	Restaurar el original	Original wiederherstellen
+Restored	Restaurado	Wiederhergestellt
+Same folder, new name	Misma carpeta, nombre nuevo	Gleicher Ordner, neuer Name
+Save as…	Guardar como…	Speichern unter…
+Save pipeline	Guardar pipeline	Pipeline speichern
+Saved	Ahorrado	Gespart
+Saved %@ in this session	%@ ahorrados en esta sesión	%@ in dieser Sitzung gespart
+Saved %@ of %@	%@ ahorrados de %@	%@ von %@ gespart
+Saved pipelines	Pipelines guardados	Gespeicherte Pipelines
+Secure sending is not available in Shrinkbox	El envío seguro no está disponible en Shrinkbox	Sicheres Senden ist in Shrinkbox nicht verfügbar
+Settings…	Ajustes…	Einstellungen…
+Share	Compartir	Teilen
+Shortcut “%@” failed	El atajo «%@» falló	Der Kurzbefehl „%@“ ist fehlgeschlagen
+Shortcuts	Atajos	Kurzbefehle
+Show each result instead of replacing the previous one	Muestra cada resultado en vez de reemplazar el anterior	Zeigt jedes Ergebnis, statt das vorherige zu ersetzen
+Show failures (%d)	Mostrar errores (%d)	Fehler anzeigen (%d)
+Show floating results	Mostrar resultados flotantes	Schwebende Ergebnisse anzeigen
+Show in Finder	Mostrar en el Finder	Im Finder zeigen
+Show the drop zone	Mostrar la zona de soltado	Ablagezone anzeigen
+Show the log	Mostrar el registro	Protokoll anzeigen
+Shrinkbox cannot write %@ files	Shrinkbox no puede escribir archivos %@	Shrinkbox kann keine %@-Dateien schreiben
+Shrinkbox works without any of them. They are used when installed, from Homebrew or from the bin folder of ~/Library/Application Support/Shrinkbox.	Shrinkbox funciona sin ninguna de ellas. Se usan si están instaladas, desde Homebrew o desde la carpeta bin de ~/Library/Application Support/Shrinkbox.	Shrinkbox funktioniert auch ohne sie. Sie werden verwendet, wenn sie installiert sind, über Homebrew oder im bin-Ordner von ~/Library/Application Support/Shrinkbox.
+Skip when more than this many files arrive at once	Omitir si llegan más archivos que este número a la vez	Überspringen, wenn mehr Dateien gleichzeitig eintreffen
+Skip when more than this many images arrive at once	Omitir si llegan más imágenes que este número a la vez	Überspringen, wenn mehr Bilder gleichzeitig eintreffen
+Skip when more than this many PDFs arrive at once	Omitir si llegan más PDF que este número a la vez	Überspringen, wenn mehr PDFs gleichzeitig eintreffen
+Skip when more than this many videos arrive at once	Omitir si llegan más vídeos que este número a la vez	Überspringen, wenn mehr Videos gleichzeitig eintreffen
+Smaller animated GIFs	GIF animados más pequeños	Kleinere animierte GIFs
+So they can be pasted right after the optimisation ends	Para poder pegarlos justo al terminar la optimización	Damit sie direkt nach der Optimierung eingefügt werden können
+Software video encoders (HEVC, AV1, WebM), MP3 and Ogg audio, and formats macOS cannot read	Codificadores de vídeo por software (HEVC, AV1, WebM), audio MP3 y Ogg, y formatos que macOS no puede leer	Software-Videoencoder (HEVC, AV1, WebM), MP3- und Ogg-Audio sowie Formate, die macOS nicht lesen kann
+Source code and releases	Código fuente y versiones	Quellcode und Versionen
+Status	Estado	Status
+Steps	Pasos	Schritte
+Stop	Detener	Stopp
+Strip EXIF metadata	Eliminar los metadatos EXIF	EXIF-Metadaten entfernen
+Stronger PDF compression	Compresión de PDF más fuerte	Stärkere PDF-Komprimierung
+Target size	Tamaño objetivo	Zielgröße
+Temporary folder	Carpeta temporal	Temporärer Ordner
+The optimised file keeps the dates of the original	El archivo optimizado conserva las fechas del original	Die optimierte Datei behält die Daten des Originals
+The PDF has no page	El PDF no tiene páginas	Das PDF hat keine Seite
+The PDF is password protected	El PDF está protegido con contraseña	Das PDF ist passwortgeschützt
+The pipeline has no step	El pipeline no tiene pasos	Die Pipeline hat keinen Schritt
+The reference of the pipeline language, for an agent to read.	La referencia del lenguaje de pipelines, para que la lea un agente.	Die Referenz der Pipeline-Sprache, die ein Agent lesen kann.
+The watermark image %@ does not exist	La imagen de marca de agua %@ no existe	Das Wasserzeichenbild %@ existiert nicht
+TIFF data	Datos TIFF	TIFF-Daten
+Timing	Tiempos	Zeiten
+to read or write %@ audio	para leer o escribir audio %@	zum Lesen oder Schreiben von %@-Audio
+to read this video format	para leer este formato de vídeo	zum Lesen dieses Videoformats
+to read this video format or use software encoders	para leer este formato de vídeo o usar codificadores por software	zum Lesen dieses Videoformats oder für Software-Encoder
+to watermark videos	para poner marca de agua a los vídeos	zum Wasserzeichnen von Videos
+to write AVIF images	para escribir imágenes AVIF	zum Schreiben von AVIF-Bildern
+to write WebP images	para escribir imágenes WebP	zum Schreiben von WebP-Bildern
+Tokens: %y %m %d %H %M %S %r %i	Marcas: %y %m %d %H %M %S %r %i	Platzhalter: %y %m %d %H %M %S %r %i
+Tools	Herramientas	Werkzeuge
+Top left	Arriba a la izquierda	Oben links
+Top right	Arriba a la derecha	Oben rechts
+Unknown setting “%@”	Ajuste «%@» desconocido	Unbekannte Einstellung „%@“
+Use a name template for clipboard images	Usar una plantilla de nombre para las imágenes del portapapeles	Namensvorlage für Zwischenablage-Bilder verwenden
+Use batch mode for large drops	Usar el modo por lotes para soltados grandes	Stapelmodus für große Ablagen verwenden
+Version %@	Versión %@	Version %@
+Video	Vídeo	Video
+Video files	Archivos de vídeo	Videodateien
+Videos	Vídeos	Videos
+Waiting	En espera	Wartet
+Watch copied data and optimise it automatically	Vigila los datos copiados y los optimiza automáticamente	Überwacht kopierte Daten und optimiert sie automatisch
+Watch paths	Carpetas vigiladas	Überwachte Ordner
+Watched file filters	Filtros de archivos vigilados	Filter für überwachte Dateien
+Watched folders	Carpetas vigiladas	Überwachte Ordner
+Watermarks apply to images and videos	Las marcas de agua se aplican a imágenes y vídeos	Wasserzeichen gelten für Bilder und Videos
+WAV, AIFF and FLAC are lossless: the factor does not apply to them	WAV, AIFF y FLAC no tienen pérdida: el factor no se aplica	WAV, AIFF und FLAC sind verlustfrei: der Faktor gilt dafür nicht
+WebP encoding failed	Falló la codificación WebP	WebP-Kodierung fehlgeschlagen
+WebP output	Salida WebP	WebP-Ausgabe
+What leaves your Mac	Lo que sale de tu Mac	Was deinen Mac verlässt
+What Shrinkbox did, one line per file.	Lo que hizo Shrinkbox, una línea por archivo.	Was Shrinkbox getan hat, eine Zeile pro Datei.
+When copying optimised image data, also copy the file path	Al copiar los datos de una imagen optimizada, copia también la ruta del archivo	Beim Kopieren optimierter Bilddaten wird auch der Dateipfad kopiert
+Whether changing speed drops frames or re-times them	Indica si cambiar la velocidad descarta fotogramas o los reajusta en el tiempo	Legt fest, ob eine Geschwindigkeitsänderung Bilder auslässt oder neu taktet
+Working directory	Directorio de trabajo	Arbeitsverzeichnis
+Working directory path	Ruta del directorio de trabajo	Pfad des Arbeitsverzeichnisses
+Resume automatic optimisations	Reanudar las optimizaciones automáticas	Automatische Optimierungen fortsetzen
+Optimising aggressively	Optimizando de forma agresiva	Aggressive Optimierung läuft
+Copied	Copiado	Kopiert
