@@ -119,25 +119,43 @@ struct DropZoneView: View {
 
 private struct PresetZonesRow: View {
     @ObservedObject var state: DropZoneState
+
     var body: some View {
-        let zones = Library.load().zones
+        let zones: [PresetZone] = Library.load().zones
         HStack(spacing: 8) {
             if zones.isEmpty {
                 Text("No preset zone yet. Add one in Settings › Automation.").font(.system(size: 11)).foregroundStyle(.secondary).padding(8).background(.regularMaterial, in: Capsule())
             }
-            ForEach(zones) { z in
-                VStack(spacing: 4) {
-                    Image(systemName: z.icon).font(.system(size: 18))
-                    Text(verbatim: z.name).font(.system(size: 10)).lineLimit(1)
-                }
-                .frame(width: 74, height: 62)
-                .background(state.hoveredZone == z.id ? Color.accentColor.opacity(0.5) : Color.clear, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-                .background(Color.black.opacity(0.55), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-                .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-                .onDrop(of: [.fileURL], isTargeted: Binding(get: { state.hoveredZone == z.id }, set: { state.hoveredZone = $0 ? z.id : (state.hoveredZone == z.id ? nil : state.hoveredZone) })) { providers in
-                    DropZone.handle(providers, zone: z); return true
-                }
-            }
+            ForEach(zones) { zone in PresetZoneCard(zone: zone, state: state) }
+        }
+    }
+}
+
+/// One preset zone: it lights up under a dragged file and runs its pipeline on a drop.
+private struct PresetZoneCard: View {
+    let zone: PresetZone
+    @ObservedObject var state: DropZoneState
+
+    private var hovered: Bool { state.hoveredZone == zone.id }
+
+    private func setTargeted(_ on: Bool) {
+        if on { state.hoveredZone = zone.id } else if hovered { state.hoveredZone = nil }
+    }
+
+    var body: some View {
+        let shape = RoundedRectangle(cornerRadius: 14, style: .continuous)
+        let tint: Color = hovered ? Color.accentColor.opacity(0.5) : Color.clear
+        VStack(spacing: 4) {
+            Image(systemName: zone.icon).font(.system(size: 18))
+            Text(verbatim: zone.name).font(.system(size: 10)).lineLimit(1)
+        }
+        .frame(width: 74, height: 62)
+        .background(tint, in: shape)
+        .background(Color.black.opacity(0.55), in: shape)
+        .background(.regularMaterial, in: shape)
+        .onDrop(of: [.fileURL], isTargeted: Binding<Bool>(get: { hovered }, set: { setTargeted($0) })) { providers in
+            DropZone.handle(providers, zone: zone)
+            return true
         }
     }
 }
