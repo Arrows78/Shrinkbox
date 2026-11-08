@@ -1,6 +1,8 @@
 import Foundation
 import AVFoundation
 import AudioToolbox
+import AppKit
+import ImageIO
 
 struct AudioJob: Sendable {
     var level: Level = .value(34)
@@ -89,7 +91,8 @@ enum AudioEngine {
         // All the tags when metadata is kept; only the cover art otherwise, unless it is to be removed.
         if job.coverArt != "remove" {
             let all = try await asset.load(.metadata)
-            writer.metadata = job.stripMetadata && job.coverArt != "keep" ? all.filter { $0.commonKey == .commonKeyArtwork } : all
+            if job.coverArt == "optimise" { writer.metadata = (job.stripMetadata ? [] : all.filter { $0.commonKey != .commonKeyArtwork }) + (await optimisedArtwork(all)) }
+            else { writer.metadata = job.stripMetadata && job.coverArt != "keep" ? all.filter { $0.commonKey == .commonKeyArtwork } : all }
         }
 
         let outputSettings: [String: Any] = [AVFormatIDKey: kAudioFormatLinearPCM, AVLinearPCMBitDepthKey: 16, AVLinearPCMIsFloatKey: false, AVLinearPCMIsBigEndianKey: false, AVLinearPCMIsNonInterleaved: false]
@@ -144,6 +147,37 @@ enum AudioEngine {
         var gain = pow(10, (target - currentLUFS) / 20)
         if peak > 0 { gain = min(gain, Double(0.98 / peak)) }   // never clip
         return gain
+    }
+
+    /// The cover art of a file, saved next to it as a JPEG ("song cover.jpg"), or nil when it has none.
+    static func extractCover(_ url: URL) async -> URL? {
+        let asset = AVURLAsset(url: url)
+        guard let items = try? await asset.load(.metadata) else { return nil }
+        for item in items where item.commonKey == .commonKeyArtwork || item.identifier == .commonIdentifierArtwork || (item.identifier?.rawValue.contains("covr") ?? false) {
+            guard let data = try? await item.load(.dataValue), let image = NSImage(data: data), let cg = image.cgImage(forProposedRect: nil, context: nil, hints: nil) else { continue }
+            let out = Files.uniqueURL(url.deletingPathExtension().deletingLastPathComponent().appendingPathComponent(url.deletingPathExtension().lastPathComponent + " cover.jpg"))
+            if (try? ImageEngine.writeImageIO(cg, type: "public.jpeg", properties: [:], quality: 0.92, to: out)) != nil { return out }
+        }
+        return nil
+    }
+
+    /// Cover art recompressed as a JPEG of at most 1000 px, the way "optimise" treats it.
+    static func optimisedArtwork(_ items: [AVMetadataItem]) async -> [AVMetadataItem] {
+        var out: [AVMetadataItem] = []
+        for item in items where item.commonKey == .commonKeyArtwork {
+            guard let data = try? await item.load(.dataValue), let src = CGImageSourceCreateWithData(data as CFData, nil),
+                  let cg = CGImageSourceCreateThumbnailAtIndex(src, 0, [kCGImageSourceCreateThumbnailFromImageAlways: true, kCGImageSourceCreateThumbnailWithTransform: true, kCGImageSourceThumbnailMaxPixelSize: 1000] as CFDictionary) else { out.append(item); continue }
+            let mutable = NSMutableData()
+            guard let dest = CGImageDestinationCreateWithData(mutable, "public.jpeg" as CFString, 1, nil) else { out.append(item); continue }
+            CGImageDestinationAddImage(dest, cg, [kCGImageDestinationLossyCompressionQuality: 0.8] as CFDictionary)
+            guard CGImageDestinationFinalize(dest), mutable.length < data.count else { out.append(item); continue }
+            let m = AVMutableMetadataItem()
+            m.identifier = .commonIdentifierArtwork
+            m.dataType = kCMMetadataBaseDataType_JPEG as String
+            m.value = mutable as Data as NSData
+            out.append(m)
+        }
+        return out
     }
 
     static func withFFmpeg(_ src: URL, ext: String, job: AudioJob) async throws -> URL {
