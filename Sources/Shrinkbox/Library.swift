@@ -66,6 +66,7 @@ enum Library {
     /// A pipeline given by name or id, or inline steps.
     static func resolve(_ text: String, library: Content = load()) throws -> (pipeline: Pipeline, saved: SavedPipeline?) {
         if let s = library.pipelines.first(where: { $0.name.caseInsensitiveCompare(text) == .orderedSame }) { return (try PipelineParser.parse(s.steps), s) }
+        if let b = Builtins.find(text) { return (try PipelineParser.parse(b.steps), SavedPipeline(name: b.id, fileType: b.kind, steps: b.steps, skipOptimisation: true)) }
         return (try PipelineParser.parse(text), nil)
     }
 
