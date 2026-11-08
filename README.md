@@ -57,8 +57,14 @@
 
 ### 🪟 Floating results
 
-- **A card per file**: thumbnail, `12 MB → 3 MB  -75%`, and buttons for downscale, recompress, crop, share, restore the original, Quick Look, Save as…, Show in Finder, copy, **fit under a size**, aggressive optimisation. You choose which buttons show.
+- **A card per file**: a thumbnail with a ring in the colour of its kind, the saving in a coloured capsule with a gauge (a conversion that makes the file bigger says so, in orange), and round buttons for downscale, recompress, crop, share, restore the original, Quick Look, Save as…, Show in Finder, copy, **fit under a size**, aggressive optimisation, **AirDrop** and **compare**. You choose which buttons show.
 - **Change the format** by clicking the extension on the card (HEIC → JPEG, MOV → MP4 or GIF, WAV → M4A…).
+- **Compare before and after**: a draggable divider for images, two synchronised players for videos (one button pauses both), an A/B switch for audio and two pages side by side for PDFs.
+- **Crop and resize window**: a size or an aspect ratio with a locked ratio, resizing over the long edge, a live preview (the frame of a video you choose, smart-crop centring) and **named sizes** you keep, with link previews, social formats, store screenshots, paper and devices to start from. *Bring back default sizes* resets them.
+- **Playback speed** of a video or an audio file from the original (0.5× to 10×, and back to 1×), and **Extract cover art** from an audio file. Cover art is kept, recompressed or removed as you choose.
+- **Ready-made pipelines** in the menu of a result, and as buttons: Convert to WebP, Sort screenshots, Half size, Watermark, 1080p, Video to GIF, 2× and silent, Pages as images, Convert to MP3. Your saved pipelines appear there too.
+- **Shelf apps and uploads**: *Add to Yoink / Dropover / Dockside / Atoll* and *Upload with Dropshare* show up when those apps are installed, and the card goes away once sent.
+- **From the keyboard**: hold the trigger keys (⌃⌘ by default, you can change them) and press a letter to act on the result under the pointer, or the latest one: `R` restore, `O` optimise again, `A` aggressive, `C` copy, `S` save as, `E` edit with your external app, `Q` Quick Look, `F` Finder, `K` compare, `D` dismiss, `X` stop, or a digit to crop it to your n-th saved size. The keys exist only while results are on screen.
 - **Drag a result out** into any app.
 - **Compact layout** (one line each) automatically beyond five results, or always. Copy all, clear all.
 - **Follow the cursor** across screens, any corner, auto-hide delays per kind. Off, Shrinkbox keeps working with no window at all.
@@ -68,7 +74,9 @@
 
 - **Drop zone**: drag files, folders, paths or links toward it and it appears in a corner. Dropped links are downloaded first. Hold ⌥ Option to show it only on demand.
 - **Preset zones**: hold ⌃ Control while dragging and zones appear around it; dropping a file on one runs its pipeline ("Web ready", "Discord 10 MB", "Square avatar"…).
-- **Batch mode** for large drops: one window with a table, a global progress bar, the failures listed, and **Restore originals** for the whole batch.
+- **Batch mode** for large drops: one window with a table, a global progress bar, the failures listed, and **Restore originals** for the whole batch. Turn on *Review batches before they start* (or use `--review` on the command line) to adjust compression, downscale, crop, conversion, speed, bitrate and audio removal first, remove files from the list, and start when you are ready. Rows have a menu: Quick Look, Show in Finder, restore, compare.
+- **Photos**: copy a photo in Photos and Shrinkbox asks it (through Apple events, with your permission) for the **original** instead of the small preview, up to a number of photos you set, with an optional limit on the longest side.
+- **A link or a path copied as text** is downloaded or opened and optimised by *Optimise the clipboard*, and the Services menu does the same for selected text.
 - **Clipboard optimiser**: a copied screenshot is optimised as you copy it and put back on the clipboard. Copied images accumulate into one file list so you can paste several at once. Copied files can be optimised too (image, video, audio and PDF each have a switch). Apps can be ignored.
 
 ### 📂 Watched folders
@@ -113,7 +121,8 @@ shrinkbox settings set imageCompression 60
 ### 🔌 Everywhere in macOS
 
 - **Services**: *Optimise with Shrinkbox* and *Strip EXIF Metadata* in the Services menu of the Finder and other apps.
-- **Shortcuts** (global, remappable): optimise the clipboard, optimise the Finder selection, pause automations, clear the results, show the drop zone.
+- **Shortcuts** (global, remappable): optimise the clipboard (or aggressively), optimise the Finder selection, pause automations, **skip the next clipboard optimisation**, **stop everything**, clear the results, show the drop zone. A short message appears on screen when you pause or resume.
+- **Menu bar icon** in three styles, or none.
 - **`shrinkbox://` links**: `optimise`, `convert`, `pause`, `resume`, `clear`, `clipboard` and `settings`, for scripts and Shortcuts.
 - **Open with**: images, videos, audio, PDFs and folders can be opened with Shrinkbox.
 - **Pause** all automations from the menu bar in one click.
@@ -124,6 +133,9 @@ shrinkbox settings set imageCompression 60
 | Shortcut | Action |
 | --- | --- |
 | `⌃⌥⌘O` | Optimise the clipboard |
+| `⌃⌥⌘A` | Optimise the clipboard aggressively |
+| `⌃⌥⌘S` | Skip the next clipboard optimisation |
+| `⌃⌥⌘X` | Stop everything and clear the results |
 | `⌃⌥⌘F` | Optimise the Finder selection |
 | `⌃⌥⌘P` | Pause or resume automatic optimisations |
 | `⌃⌥⌘C` | Clear the floating results |
@@ -144,6 +156,7 @@ Every one can be changed, or cleared, in **Settings › Shortcuts**.
 | `build/Shrinkbox.app/Contents/MacOS/Shrinkbox --selftest` | Non-interactive checks: parsers, geometry, pipelines, placements, the library, the MCP tools, and every engine on files made on the fly (HEIC to JPEG, PNG palettes, GIFs, PDFs, audio, video). |
 | `build/Shrinkbox.app/Contents/MacOS/Shrinkbox --open-settings <pane>` | Opens the settings on a pane. |
 | `build/Shrinkbox.app/Contents/MacOS/Shrinkbox --optimise-demo <files…>` | Runs files through the app and shows the floating results. |
+| `build/Shrinkbox.app/Contents/MacOS/Shrinkbox --open-batch <files…>` / `--open-crop <file>` / `--open-dropzone [--presets]` | Opens the batch review, the crop window or the drop zone. |
 | `swift Resources/make_icon.swift <out.png>` | Renders the 1024 px app icon. |
 | `scripts/render_cask.sh VERSION SHA256` | Prints the Homebrew cask of a release (used by the release workflow). |
 | `python3 scripts/release.py prepare` | Next version, version bump and changelog from the commit messages ([`docs/RELEASING.md`](docs/RELEASING.md)). |
@@ -161,6 +174,7 @@ Shrinkbox asks for nothing at launch.
 | --- | --- | --- |
 | Files and folders (Downloads, Desktop, Documents) | Watched folders | Notice and optimise the files that appear there. macOS asks the first time you watch one. |
 | Automation (Finder) | *Optimise the Finder selection* | Ask the Finder which files are selected. |
+| Automation (Photos) | Photos integration | Ask Photos for the originals of the photos you copy. |
 
 Everything else (drop zone, clipboard, services, shortcuts, the command line) needs no permission.
 
@@ -208,7 +222,7 @@ Grab `Shrinkbox-<version>.zip` from the [latest release](https://github.com/Arro
 > [!WARNING]
 > Releases are signed ad hoc, not notarised, so macOS blocks the first launch. Open **System Settings › Privacy & Security** and click **Open Anyway**, or run `xattr -dr com.apple.quarantine /Applications/Shrinkbox.app`.
 
-The command line is the same executable: `/Applications/Shrinkbox.app/Contents/MacOS/Shrinkbox`. Homebrew links it as `shrinkbox`; otherwise **Settings › Agents** copies the one-line command that does it.
+The command line is the same executable: `/Applications/Shrinkbox.app/Contents/MacOS/Shrinkbox`. Homebrew links it as `shrinkbox`; otherwise **Settings › Agents › Install the command** does it in one click (it asks for your password when the folder needs it).
 
 ### Build from source
 
@@ -246,7 +260,10 @@ Shrinkbox/
     ├── Library.swift, Optimiser.swift     # Saved pipelines, automations, preset zones; scheduling and loop protection
     ├── Settings.swift                     # The settings catalogue behind the window, the CLI and the agents
     ├── Results, ResultsView, Panels       # Floating results, cards, drop zone
-    ├── Batch.swift, Watchers.swift        # Batch window; folder and clipboard watchers
+    ├── ResultKeys.swift, Compare.swift    # Keys of the results and on-screen messages; before and after
+    ├── CropWindow.swift, Builtins.swift   # Crop window and saved sizes; ready-made pipelines, shelf apps, AirDrop
+    ├── Photos.swift, CLIInstaller.swift   # Originals from Photos; the command on the PATH
+    ├── Batch.swift, Watchers.swift        # Batch window and its review; folder and clipboard watchers
     ├── SettingsKit, SettingsWindow        # Settings window, rows generated from the catalogue
     ├── CLI.swift, MCP.swift, Reference    # Command line, MCP server, pipeline guide
     ├── Hotkeys.swift, Clipboard.swift     # Global shortcuts and their recorder; pasteboard helpers
@@ -279,9 +296,10 @@ Deleting those and the preferences resets the app.
 
 Not done yet, or not verifiable without hardware or accounts:
 
-- **Sending**: securely sharing a file straight from a result, and uploading to a file-sharing app.
+- **Sending**: sharing a file securely and peer to peer from a result (it needs a signalling service), and dragging all selected results at once.
+- **Sync and Shortcuts**: settings sync through iCloud (it needs an iCloud entitlement, so a Developer ID), and Shortcuts actions through App Intents (they need an Xcode build).
 - **Distribution**: automatic updates, notarised releases, and a native review of the Spanish and German texts.
-- **Formats**: animated WebP output, JPEG XL through a system encoder, OCR-based PDF text layers.
+- **Formats**: animated WebP output, JPEG XL through a system encoder, OCR-based PDF text layers, and cropping PDF pages by their longest edge.
 
 ## 🙌 Contributing
 
