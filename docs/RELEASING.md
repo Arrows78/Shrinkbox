@@ -57,6 +57,25 @@ the last tag belongs in a release. Pushing a tag by hand still works the same as
 - Only `v<major>.<minor>.<patch>` tags count. A tag pushed without a version bump makes the release workflow fail
   at its first check; delete it (`git push origin --delete vX.Y.Z`) and tag again once the version is bumped.
 
+## Signing
+
+macOS ties privacy permissions (screen recording, accessibility…) to the identity an app is signed with. A release signed ad hoc has a
+new identity every time, so macOS forgets the permissions at each update. The release workflow therefore signs with the same
+self-signed certificate as local builds, **Shrinkbox Local Signing**, when two repository secrets exist:
+
+- `SHRINKBOX_SIGNING_P12`: the certificate with its private key, exported from Keychain Access as a `.p12` and base64 encoded;
+- `SHRINKBOX_SIGNING_PASSWORD`: the password chosen at export.
+
+```sh
+base64 -i "Shrinkbox Local Signing.p12" | gh secret set SHRINKBOX_SIGNING_P12 --repo Arrows78/Shrinkbox
+gh secret set SHRINKBOX_SIGNING_PASSWORD --repo Arrows78/Shrinkbox
+```
+
+Delete the exported file afterwards. `scripts/ci_import_identity.sh` imports the identity into a temporary keychain, the build is signed with
+it and a step fails the release if the result is still ad hoc. Without the secrets the release is still published, signed ad hoc, with a notice.
+Keep a safe copy of the `.p12`: with a different certificate every user has to grant the permissions once more.
+The certificate is self-signed, so macOS still blocks the first launch (open it with **Open Anyway**); only a Developer ID and notarisation remove that.
+
 ## Homebrew tap
 
 The tap is the public repository `Arrows78/homebrew-shrinkbox`. The release workflow rewrites `Casks/shrinkbox.rb` in it after publishing a release,

@@ -44,8 +44,29 @@ jobs:
           python3 -B -m unittest discover -s scripts/tests -q
           python3 -B scripts/release.py check
 
+      - name: Import signing identity
+        env:
+          SIGNING_P12: ${{ secrets.SHRINKBOX_SIGNING_P12 }}
+          SIGNING_PASSWORD: ${{ secrets.SHRINKBOX_SIGNING_PASSWORD }}
+        run: |
+          hash=$(sh scripts/ci_import_identity.sh "Shrinkbox Local Signing")
+          if [ -n "$hash" ]; then
+            echo "SHRINKBOX_SIGN_IDENTITY=$hash" >> "$GITHUB_ENV"
+          else
+            echo "::notice::SHRINKBOX_SIGNING_P12 is not set: the build is signed ad hoc, so macOS asks for privacy permissions again after each update."
+          fi
+
       - name: Build
         run: SHRINKBOX_UNIVERSAL=1 ./build.sh
+
+      - name: Check the signature
+        run: |
+          if [ -n "${SHRINKBOX_SIGN_IDENTITY:-}" ]; then
+            info=$(codesign -dv build/Shrinkbox.app 2>&1)
+            case "$info" in *Signature=adhoc*) echo "::error::Signed ad hoc although a signing identity was imported"; exit 1;; esac
+            codesign --verify --deep --strict build/Shrinkbox.app
+            codesign -dr - build/Shrinkbox.app 2>&1 | grep designated
+          fi
 
       - name: Self-test
         run: |
