@@ -260,7 +260,8 @@ struct PrefRow: View {
                         ForEach(options, id: \.self) { Text(Self.label($0)).tag($0) }
                     }.labelsHidden().frame(width: 170)
                 }
-            case .multi(let options):
+            case .multi(let fixed):
+                let options = pref.key == "floatingResultActions" ? Builtins.buttonOptions() : fixed
                 SettingsRow(title: LocalizedStringKey(pref.title), subtitle: sub) {
                     Menu {
                         ForEach(options, id: \.self) { o in
@@ -300,6 +301,17 @@ struct PrefRow: View {
     }
 
     static func label(_ value: String) -> String {
+        if let l = Builtins.label(forAction: value) { return l }
+        switch value {
+        case "airDrop": return L("AirDrop")
+        case "addToShelf": return L("Add to shelf")
+        case "uploadWithDropshare": return L("Upload with Dropshare")
+        case "compare": return L("Compare before and after")
+        default: return baseLabel(value)
+        }
+    }
+
+    private static func baseLabel(_ value: String) -> String {
         switch value {
         case "temporary": L("Temporary folder")
         case "inPlace": L("Replace the original")

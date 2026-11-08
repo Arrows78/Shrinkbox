@@ -29,7 +29,7 @@ enum Prefs {
     static let videoFormats = ["mov", "mp4", "webm", "mkv", "m2v", "avi", "m4v", "mpg"]
     static let audioFormats = ["wav", "aiff", "flac", "ogg"]
     static let corners = ["bottomRight", "bottomLeft", "topRight", "topLeft"]
-    static let actionIDs = ["downscale", "compression", "crop", "share", "restoreOptimise", "aggressiveOptimisation", "copyToClipboard", "showInFinder", "quickLook", "saveAs", "targetSize"]
+    static let actionIDs = ["downscale", "compression", "crop", "share", "restoreOptimise", "aggressiveOptimisation", "copyToClipboard", "showInFinder", "quickLook", "saveAs", "targetSize", "airDrop", "addToShelf", "uploadWithDropshare", "compare"]
 
     static let all: [Pref] = {
         var p: [Pref] = []
@@ -89,6 +89,8 @@ enum Prefs {
         add("maxImageFileCount", "Skip when more than this many images arrive at once", group: "Images", section: "Watched file filters", .int(1...10_000), "4")
         add("enableAutomaticImageOptimisations", "Enable image auto-optimiser", group: "Images", section: "Watch paths", .bool, "true")
         add("imageWatchPaths", "Watched folders", group: "Images", section: "Watch paths", .paths, "", help: "Images are optimised as they appear in these folders")
+        add("cropPresets", "Crop sizes", group: "Hidden", section: "Crop sizes", .text, "")
+        add("shelfApp", "Shelf app", group: "General", section: "Edit with external app", .text, "", help: "Yoink, Dropover, Dockside or Atoll: the one that receives files from “Add to shelf”. Empty: the first one installed")
         add("editorAppImage", "Edit images with", group: "General", section: "Edit with external app", .text, "")
         // Video
         add("videoCompression", "Compression", group: "Video", section: "Optimisation rules", .text, "fast:50", help: compressionHelp)
@@ -190,7 +192,8 @@ enum Prefs {
             store.set(v, forKey: key)
         case .multi(let options):
             let items = v.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }
-            if let bad = items.first(where: { !options.contains($0) }) { return L("%@: “%@” is not one of: %@", key, bad, options.joined(separator: ", ")) }
+            let extra = key == "floatingResultActions" ? Set(Builtins.buttonOptions()) : []
+            if let bad = items.first(where: { !options.contains($0) && !extra.contains($0) }) { return L("%@: “%@” is not one of: %@", key, bad, options.joined(separator: ", ")) }
             store.set(items.joined(separator: ","), forKey: key)
         case .paths, .text:
             if key == "imageCompression" || key == "videoCompression" || key == "audioCompression", Level(v) == nil { return L("%@ must be %@", key, compressionHelp) }

@@ -27,7 +27,8 @@ ignore = {"", "x", "·", "…", "C", "D", "F", "O", "P", "audio", "video", "shri
 cli_only = ("Usage:", "Give ", "--size is required", "Expected key", "capFps needs", "changeSpeed needs", "lowerBitrate needs", "crop needs", "downscale needs",
             "A pipeline named", "A zone with this name", "No saved pipeline with this name", "Unknown step", "%@ needs", "%@ is needed %@")
 pat = re.compile(r'\b(?:L|Text|Button|Label|Toggle|Section|TextField|Stepper|Picker|Slider|accessibilityLabel|SettingsToggle|SettingsNote|help)\(\s*"((?:[^"\\]|\\.)*)"'
-                 r'|\b(?:title|subtitle|label):\s*"((?:[^"\\]|\\.)*)"')
+                 r'|\b(?:title|subtitle|label):\s*"((?:[^"\\]|\\.)*)"'
+                 r'|CropPreset\(name:\s*"((?:[^"\\]|\\.)*)"')
 # The settings catalogue: add("key", "Title", group:, section: "…", …, help: "…") is shown through LocalizedStringKey.
 catalogue = re.compile(r'add\("[^"]+",\s*"((?:[^"\\]|\\.)*)",\s*group:\s*"[^"]*",\s*section:\s*"((?:[^"\\]|\\.)*)"(?:.*?help:\s*"((?:[^"\\]|\\.)*)")?')
 # Titles of the settings panes: `case .images: "Images"`.
@@ -37,7 +38,7 @@ for f in sorted((root / "Sources/Shrinkbox").glob("*.swift")):
     if f.name in ("SelfTest.swift",):
         continue
     text = f.read_text()
-    found = [m.group(1) if m.group(1) is not None else m.group(2) for m in pat.finditer(text)]
+    found = [next(g for g in m.groups() if g is not None) for m in pat.finditer(text)]
     if f.name == "Settings.swift":
         for m in catalogue.finditer(text): found += [g for g in m.groups() if g is not None]
     if f.name == "SettingsKit.swift":

@@ -322,3 +322,85 @@ Photos, videos, audio, PDFs and folders · hold ⌃ for presets	Fotos, vídeos, 
 %d files	%d archivos	%d Dateien
 %d files · saved %@	%d archivos · %@ ahorrados	%d Dateien · %@ gespart
 More	Más	Mehr
+Convert to WebP	Convertir a WebP	In WebP umwandeln
+Smaller images for the web	Imágenes más ligeras para la web	Kleinere Bilder fürs Web
+Sort screenshots	Ordenar capturas de pantalla	Screenshots sortieren
+Move screenshots into Pictures/Screenshots by year and month	Mueve las capturas a Imágenes/Screenshots por año y mes	Verschiebt Screenshots nach Bilder/Screenshots, nach Jahr und Monat
+Half size	Mitad de tamaño	Halbe Größe
+Scale the image down to half its size	Reduce la imagen a la mitad de su tamaño	Verkleinert das Bild auf die halbe Größe
+Watermark	Marca de agua	Wasserzeichen
+Overlay watermark.png from the same folder	Superpone watermark.png de la misma carpeta	Legt watermark.png aus demselben Ordner darüber
+1080p	1080p	1080p
+Resize to 1920 pixels wide and optimise	Redimensiona a 1920 píxeles de ancho y optimiza	Skaliert auf 1920 Pixel Breite und optimiert
+Video to GIF	Vídeo a GIF	Video zu GIF
+Crop to 800px and convert to an animated GIF	Recorta a 800 px y convierte a GIF animado	Schneidet auf 800 px zu und wandelt in ein animiertes GIF um
+2× and silent	2× y sin sonido	2× und stumm
+Double the playback speed and remove the audio	Duplica la velocidad y quita el audio	Verdoppelt die Geschwindigkeit und entfernt den Ton
+Scale the video down to half its size	Reduce el vídeo a la mitad de su tamaño	Verkleinert das Video auf die halbe Größe
+Pages as images	Páginas como imágenes	Seiten als Bilder
+Render each page to a JPEG	Convierte cada página a JPEG	Wandelt jede Seite in ein JPEG um
+Convert any audio file to MP3 at 128 kbps	Convierte cualquier audio a MP3 a 128 kbps	Wandelt jede Audiodatei in MP3 mit 128 kbit/s um
+AirDrop	AirDrop	AirDrop
+Send with AirDrop	Enviar con AirDrop	Mit AirDrop senden
+Add to shelf	Añadir a la estantería	Zum Ablagefach hinzufügen
+Add to %@	Añadir a %@	Zu %@ hinzufügen
+Upload with Dropshare	Subir con Dropshare	Mit Dropshare hochladen
+Compare before and after	Comparar antes y después	Vorher und nachher vergleichen
+Pipelines	Pipelines	Pipelines
+Shelf app	App de estantería	Ablagefach-App
+Yoink, Dropover, Dockside or Atoll: the one that receives files from “Add to shelf”. Empty: the first one installed	Yoink, Dropover, Dockside o Atoll: la que recibe los archivos de «Añadir a la estantería». Vacío: la primera instalada	Yoink, Dropover, Dockside oder Atoll: die App, die Dateien von „Zum Ablagefach hinzufügen“ erhält. Leer: die erste installierte
+Original	Original	Original
+Optimised	Optimizado	Optimiert
+Original %@	Original %@	Original %@
+Optimised %@	Optimizado %@	Optimiert %@
+Drag across the preview to move the split divider	Arrastra sobre la vista previa para mover el divisor	Ziehe über die Vorschau, um den Trenner zu verschieben
+Pause both videos	Pausar ambos vídeos	Beide Videos pausieren
+Play both videos	Reproducir ambos vídeos	Beide Videos abspielen
+Already at this size	Ya tiene este tamaño	Bereits in dieser Größe
+Aspect ratio	Relación de aspecto	Seitenverhältnis
+Bring back default sizes	Restaurar los tamaños predeterminados	Standardgrößen wiederherstellen
+Cancel	Cancelar	Abbrechen
+Changing speed to %@×	Cambiando la velocidad a %@×	Ändere die Geschwindigkeit auf %@×
+Choose the video frame used for the crop preview	Elige el fotograma del vídeo para la vista previa del recorte	Wähle das Videobild für die Zuschnittvorschau
+Crop and resize…	Recortar y redimensionar…	Zuschneiden und Größe ändern…
+Crop sizes	Tamaños de recorte	Zuschnittgrößen
+Extract cover art	Extraer la carátula	Cover extrahieren
+Height	Alto	Höhe
+Name this size	Nombra este tamaño	Diese Größe benennen
+No cover art in this file	No hay carátula en este archivo	Kein Cover in dieser Datei
+Normal speed (1×)	Velocidad normal (1×)	Normale Geschwindigkeit (1×)
+Paper size or device	Tamaño de papel o dispositivo	Papierformat oder Gerät
+Playback speed	Velocidad de reproducción	Wiedergabegeschwindigkeit
+Resize images until the longest edge is equal or lower than the specified size.	Redimensiona las imágenes hasta que el lado más largo sea igual o menor que el tamaño indicado.	Verkleinert Bilder, bis die längste Kante gleich oder kleiner als die angegebene Größe ist.
+Resize over long edge	Redimensionar por el lado largo	Nach der langen Kante anpassen
+Reverting to original speed	Volviendo a la velocidad original	Zurück zur ursprünglichen Geschwindigkeit
+Save size	Guardar tamaño	Größe speichern
+Size	Tamaño	Größe
+Sizes	Tamaños	Größen
+Smart crop	Recorte inteligente	Intelligenter Zuschnitt
+Width	Ancho	Breite
+Aspect ratio locked, click to unlock	Relación de aspecto bloqueada, haz clic para desbloquear	Seitenverhältnis gesperrt, zum Entsperren klicken
+Aspect ratio unlocked, click to lock	Relación de aspecto desbloqueada, haz clic para bloquear	Seitenverhältnis entsperrt, zum Sperren klicken
+Square	Cuadrado	Quadrat
+Landscape 16:9	Horizontal 16:9	Querformat 16:9
+Classic 4:3	Clásico 4:3	Klassisch 4:3
+Photo 3:2	Foto 3:2	Foto 3:2
+Portrait 9:16	Vertical 9:16	Hochformat 9:16
+Link preview	Vista previa de enlace	Link-Vorschau
+YouTube thumbnail	Miniatura de YouTube	YouTube-Vorschaubild
+Instagram post	Publicación de Instagram	Instagram-Beitrag
+Story or Reel	Story o Reel	Story oder Reel
+X header	Cabecera de X	X-Header
+Google Play screenshot	Captura de Google Play	Google-Play-Screenshot
+App Store screenshot	Captura de App Store	App-Store-Screenshot
+Full HD	Full HD	Full HD
+Long edge 1600	Lado largo 1600	Lange Kante 1600
+A4 at 150 dpi	A4 a 150 ppp	A4 bei 150 dpi
+A5 at 150 dpi	A5 a 150 ppp	A5 bei 150 dpi
+US Letter at 150 dpi	US Letter a 150 ppp	US Letter bei 150 dpi
+iPhone 15 Pro	iPhone 15 Pro	iPhone 15 Pro
+iPhone 15 Pro Max	iPhone 15 Pro Max	iPhone 15 Pro Max
+4K	4K	4K
+Favicon	Favicon	Favicon
+iPad Pro 13-inch	iPad Pro de 13 pulgadas	iPad Pro 13 Zoll
+MacBook Air 13-inch	MacBook Air de 13 pulgadas	MacBook Air 13 Zoll

@@ -361,9 +361,7 @@ struct ActionButton: View {
         case "aggressiveOptimisation":
             Button { model.compress(item, aggressive: true) } label: { RoundIcon(symbol: "bolt.fill", tip: L("Aggressive optimisation")) }.buttonStyle(.plain)
         case "crop" where item.kind != .audio:
-            Menu {
-                ForEach(["1:1", "16:9", "4:3", "3:2", "9:16", "1200x630", "1920"], id: \.self) { s in Button(s) { model.crop(item, spec: s) } }
-            } label: { RoundIcon(symbol: "crop", tip: L("Crop")) }.menuStyle(.borderlessButton).menuIndicator(.hidden).fixedSize()
+            Menu { CropMenuItems(item: item) } label: { RoundIcon(symbol: "crop", tip: L("Crop")) }.menuStyle(.borderlessButton).menuIndicator(.hidden).fixedSize()
         case "targetSize":
             Menu {
                 ForEach([("500 KB", 500_000), ("1 MB", 1_000_000), ("10 MB", 10_000_000), ("16 MB", 16_000_000), ("25 MB", 25_000_000)], id: \.0) { l, b in Button(L("Fit under %@", l)) { model.fit(item, bytes: Int64(b)) } }
@@ -380,7 +378,17 @@ struct ActionButton: View {
         case "showInFinder": Button { model.showInFinder(item) } label: { RoundIcon(symbol: "folder", tip: L("Show in Finder")) }.buttonStyle(.plain)
         case "quickLook": Button { QuickLook.show(item.current) } label: { RoundIcon(symbol: "eye", tip: L("Quick Look")) }.buttonStyle(.plain)
         case "saveAs": Button { model.saveAs(item) } label: { RoundIcon(symbol: "square.and.arrow.down", tip: L("Save as…")) }.buttonStyle(.plain)
-        default: EmptyView()
+        case "airDrop": Button { AirDrop.send([item.current]) } label: { RoundIcon(symbol: "airplayaudio", tip: L("Send with AirDrop")) }.buttonStyle(.plain)
+        case "addToShelf":
+            if let app = ShelfApps.current { Button { ShelfApps.shelve([item.current]) } label: { RoundIcon(symbol: "tray.and.arrow.down", tip: L("Add to %@", app)) }.buttonStyle(.plain) }
+        case "uploadWithDropshare":
+            if ShelfApps.dropshare != nil { Button { ShelfApps.upload([item.current]) } label: { RoundIcon(symbol: "icloud.and.arrow.up", tip: L("Upload with Dropshare")) }.buttonStyle(.plain) }
+        case "compare":
+            if item.outcome?.backup != nil { Button { CompareWindow.show(item) } label: { RoundIcon(symbol: "square.split.2x1", tip: L("Compare before and after")) }.buttonStyle(.plain) }
+        default:
+            if let (kind, name) = Builtins.parseAction(id), kind == item.kind {
+                Button { model.runPipeline(item, name) } label: { RoundIcon(symbol: Builtins.find(name)?.symbol ?? "wand.and.stars", tip: Builtins.find(name)?.title ?? name) }.buttonStyle(.plain)
+            }
         }
     }
 }
@@ -395,9 +403,17 @@ struct ActionMenu: View {
         if item.outcome?.backup != nil { Button(L("Restore the original")) { model.restore(item) } }
         Divider()
         Menu(L("Downscale")) { ForEach([0.75, 0.5, 0.33, 0.25], id: \.self) { f in Button("\(Int(f * 100))%") { model.downscale(item, factor: f) } } }
-        if item.kind != .audio { Menu(L("Crop")) { ForEach(["1:1", "16:9", "4:3", "3:2", "9:16", "1200x630", "1920"], id: \.self) { s in Button(s) { model.crop(item, spec: s) } } } }
+        if item.kind != .audio { Menu(L("Crop")) { CropMenuItems(item: item) } }
+        if item.kind == .video || item.kind == .audio { Menu(L("Playback speed")) { ForEach([0.5, 1, 1.5, 2, 3, 4, 10], id: \.self) { f in Button(f == 1 ? L("Normal speed (1×)") : String(format: "%g×", f)) { model.changeSpeed(item, factor: f) } } } }
+        if item.kind == .audio { Button(L("Extract cover art")) { model.extractCover(item) } }
         Menu(L("Convert to…")) { ForEach(FormatMenu.targets(for: item.kind), id: \.self) { o in Button(o.uppercased()) { model.convert(item, to: o) } } }
         Menu(L("Fit under…")) { ForEach([("500 KB", 500_000), ("1 MB", 1_000_000), ("10 MB", 10_000_000), ("25 MB", 25_000_000)], id: \.0) { l, b in Button(l) { model.fit(item, bytes: Int64(b)) } } }
+        pipelinesMenu
+        Divider()
+        Button(L("Send with AirDrop")) { AirDrop.send([item.current]) }
+        if let app = ShelfApps.current { Button(L("Add to %@", app)) { ShelfApps.shelve([item.current]) } }
+        if ShelfApps.dropshare != nil { Button(L("Upload with Dropshare")) { ShelfApps.upload([item.current]) } }
+        if item.outcome?.backup != nil { Button(L("Compare before and after")) { CompareWindow.show(item) } }
         Divider()
         Button(L("Show in Finder")) { model.showInFinder(item) }
         Button(L("Quick Look")) { QuickLook.show(item.current) }
@@ -409,6 +425,30 @@ struct ActionMenu: View {
         }
         Divider()
         Button(L("Dismiss")) { model.dismiss(item) }
+    }
+}
+
+/// The saved sizes, then the window with every option.
+struct CropMenuItems: View {
+    @ObservedObject var item: ResultItem
+    @ObservedObject var model = ResultsModel.shared
+
+    var body: some View {
+        ForEach(CropPresets.load()) { p in Button(L(p.name) + "  " + p.spec) { model.crop(item, spec: p.spec, longEdge: !p.spec.contains(":") && !p.spec.contains("x")) } }
+        Divider()
+        Button(L("Crop and resize…")) { CropWindow.show(item) }
+    }
+}
+
+extension ActionMenu {
+    /// Built-in and saved pipelines that apply to this kind of file.
+    @ViewBuilder var pipelinesMenu: some View {
+        let saved = Library.load().pipelines.filter { $0.fileType == nil || $0.fileType == item.kind }
+        Menu(L("Pipelines")) {
+            ForEach(Builtins.pipelines(for: item.kind)) { b in Button { model.runPipeline(item, b.id) } label: { Label(b.title, systemImage: b.symbol) } }
+            if !saved.isEmpty { Divider() }
+            ForEach(saved) { p in Button(p.name) { model.runPipeline(item, p.name) } }
+        }
     }
 }
 

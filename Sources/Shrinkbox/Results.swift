@@ -177,6 +177,14 @@ final class ResultsModel: ObservableObject {
         }
     }
 
+    /// Runs a built-in or saved pipeline on a result, from the original.
+    func runPipeline(_ item: ResultItem, _ name: String) {
+        guard let (pipeline, saved) = try? Library.resolve(name) else { item.state = .failed(L("No saved pipeline with this name")); return }
+        var steps = pipeline.steps
+        if let s = saved, !s.skipOptimisation { steps.insert(.optimise(encoder: nil, compression: nil, adaptive: nil, dpi: nil, location: nil), at: 0) }
+        rerun(item, steps: steps, label: Builtins.find(name)?.title ?? name)
+    }
+
     func downscale(_ item: ResultItem, factor: Double) {
         guard item.kind != .pdf else { return }
         let text = Int((factor * 100).rounded())
@@ -189,10 +197,28 @@ final class ResultsModel: ObservableObject {
         rerun(item, steps: [.optimise(encoder: aggressive ? "aggressive" : nil, compression: nil, adaptive: nil, dpi: nil, location: loc)], label: L(aggressive ? "Optimising aggressively" : "Optimising"))
     }
 
-    func crop(_ item: ResultItem, spec: String) {
-        guard item.kind == .image || item.kind == .video || item.kind == .pdf, CropSpec.parse(spec) != nil else { return }
+    func crop(_ item: ResultItem, spec: String, longEdge: Bool = false, smart: Bool? = nil) {
+        guard item.kind == .image || item.kind == .video || item.kind == .pdf, CropSpec.parse(spec, longEdge: longEdge) != nil else { return }
         let loc = Library.placementText(Prefs.placement(optimised: item.kind))
-        rerun(item, steps: [.crop(spec: spec, longEdge: false, smart: item.kind == .image, location: loc)], label: L("Cropping to %@", spec))
+        rerun(item, steps: [.crop(spec: spec, longEdge: longEdge, smart: smart ?? (item.kind == .image), location: loc)], label: L("Cropping to %@", spec))
+    }
+
+    /// Changes the playback speed of a video or an audio file, from the original: 1 gives the normal speed back.
+    func changeSpeed(_ item: ResultItem, factor: Double) {
+        guard item.kind == .video || item.kind == .audio else { return }
+        let loc = Library.placementText(Prefs.placement(optimised: item.kind))
+        var steps: [Step] = []
+        if factor != 1 { steps.append(.changeSpeed(factor: factor, frames: nil)) }
+        steps.append(.optimise(encoder: nil, compression: nil, adaptive: nil, dpi: nil, location: loc))
+        rerun(item, steps: steps, label: factor == 1 ? L("Reverting to original speed") : L("Changing speed to %@×", String(format: "%g", factor)))
+    }
+
+    /// Saves the cover art of an audio file next to it, as a JPEG.
+    func extractCover(_ item: ResultItem) {
+        Task {
+            if let url = await AudioEngine.extractCover(item.current) { NSWorkspace.shared.activateFileViewerSelecting([url]) }
+            else { item.state = .failed(L("No cover art in this file")); changed?() }
+        }
     }
 
     func fit(_ item: ResultItem, bytes: Int64) {
