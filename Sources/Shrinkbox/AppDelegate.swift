@@ -47,6 +47,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             let urls = a[(i + 1)...].map { URL(fileURLWithPath: $0) }
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) { ResultsModel.shared.enqueue(urls, source: .manual) }
         }
+        if let i = a.firstIndex(of: "--open-batch") {
+            let urls = a[(i + 1)...].map { URL(fileURLWithPath: $0) }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) { BatchManager.shared.start(urls, source: .dropZone, review: true) }
+        }
+        if let i = a.firstIndex(of: "--open-crop"), a.indices.contains(i + 1) {
+            let url = URL(fileURLWithPath: a[i + 1])
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+                guard let kind = Media.kind(of: url) else { return }
+                let item = ResultItem(file: url, kind: kind, source: .manual)
+                CropWindow.show(item)
+            }
+        }
         if a.contains("--open-menu") {
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in self?.statusItem?.menu?.popUp(positioning: nil, at: NSPoint(x: 400, y: 900), in: nil) }
         }
@@ -232,6 +244,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             let files = Media.collect(paths, recursive: false)
             let loc = Library.placementText(Prefs.placement(converted: .image, manual: true)) ?? "sameFolder"
             ResultsModel.shared.enqueuePipeline(files, pipeline: Pipeline(steps: [.convert(to: to, location: loc)]), source: .manual, copyWhenDone: false)
+        case "review":
+            let files = Media.collect(paths, recursive: true)
+            if !files.isEmpty { BatchManager.shared.start(files, source: .dropZone, review: true) }
         case "pause": Prefs.set("pauseAutomations", "true")
         case "resume": Prefs.set("pauseAutomations", "false")
         case "clear": ResultsModel.shared.clearAll()

@@ -151,6 +151,19 @@ enum SelfTest {
         check("crop sizes: a saved list comes back, and resets", CropPresets.load() == [CropPreset(name: "Mine", spec: "800x600")])
         CropPresets.reset()
         check("crop sizes: reset gives the defaults", CropPresets.load() == CropPresets.defaults)
+        var batch = BatchParams()
+        check("batch: untouched, a file gets what its source gives it", batch.pipeline(for: .image) == nil && batch.isDefault)
+        batch.downscale = 0.5; batch.convertImages = "png"; batch.removeAudio = true; batch.speed = 2; batch.customCompression = true
+        let image = batch.pipeline(for: .image)?.steps ?? [], video = batch.pipeline(for: .video)?.steps ?? [], pdf = batch.pipeline(for: .pdf)?.steps ?? []
+        check("batch: an image gets its downscale, its conversion and its compression", image.contains(.downscale(factor: 0.5, location: nil)) && image.contains(.convert(to: "png", location: "sameFolder")) && !image.contains(.removeAudio))
+        check("batch: a video also loses its audio and changes speed", video.contains(.removeAudio) && video.contains(.changeSpeed(factor: 2, frames: nil)))
+        check("batch: a PDF is not downscaled", !pdf.contains(.downscale(factor: 0.5, location: nil)))
+        check("keys: letters and digits do not collide", Set(ResultKeys.Key.allCases.map(\.code)).count == ResultKeys.Key.allCases.count && Set(ResultKeys.digitCodes).isDisjoint(with: ResultKeys.Key.allCases.map(\.code)))
+        check("keys: every trigger setting gives modifiers", ["controlCommand", "controlOption", "controlShift", "optionCommand", "controlOptionCommand"].allSatisfy { Prefs.set("triggerKeys", $0) == nil && ResultKeys.trigger.modifiers != 0 })
+        Prefs.reset("triggerKeys")
+        check("shortcuts: the new actions have unique defaults", Set(HotkeyAction.allCases.map { $0.defaultCombo.display }).count == HotkeyAction.allCases.count)
+        check("settings: icon style is a choice", Prefs.set("menubarIconStyle", "box") == nil && Prefs.set("menubarIconStyle", "round") != nil)
+        Prefs.reset("menubarIconStyle")
         check("shortcuts: defaults are distinct and need a modifier", Set(HotkeyAction.allCases.map { $0.defaultCombo.display }).count == HotkeyAction.allCases.count && HotkeyAction.allCases.allSatisfy { $0.defaultCombo.modifiers != 0 })
         check("reference: the guide names every step", ["optimise", "downscale", "convert", "crop", "targetSize", "stripExif", "watermark", "changeSpeed", "normalize", "runScript", "fork"].allSatisfy { Reference.pipelineGuide.contains($0) })
     }
@@ -213,7 +226,7 @@ enum SelfTest {
             let alphaOut = try await ImageEngine.process(alphaFile, job: ImageJob(level: .value(70)))
             if let s = CGImageSourceCreateWithURL(alphaOut as CFURL, nil), let img = CGImageSourceCreateImageAtIndex(s, 0, nil) { check("image: transparency is kept", ImageEngine.hasAlpha(img)) }
             // Metadata
-            let stripped = try ImageEngine.stripMetadata(photo)
+            let stripped = try await ImageEngine.stripMetadata(photo)
             check("image: metadata removal keeps the picture", size(of: stripped)?.0 == 2400)
             // Format conversion between lossy formats
             var toPNG = ImageJob(level: .value(30)); toPNG.targetExtension = "png"

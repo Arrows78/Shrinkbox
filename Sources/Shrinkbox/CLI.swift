@@ -199,6 +199,7 @@ enum CLI {
         let a = Args(argv, valued: valued, aliases: aliases)
         do {
             let files = try await inputs(a, defaultKinds: kinds)
+            if a.has("review") { return openReview(files) }
             var steps: [Step] = []
             if let c = a.value("crop") { guard CropSpec.parse(c) != nil else { throw PipelineError(L("Invalid crop size “%@”", c)) }; steps.append(.crop(spec: c, longEdge: false, smart: a.has("smart-crop"), location: nil)) }
             if let f = a.value("downscale-factor").flatMap(Double.init) { steps.append(.downscale(factor: f, location: nil)) }
@@ -214,6 +215,16 @@ enum CLI {
             steps.append(.optimise(encoder: encoder, compression: compression(a), adaptive: a.has("adaptive-optimisation") ? true : nil, dpi: dpi, location: location(a, kind: kind)))
             return await process(files, pipeline: Pipeline(steps: steps), a: a)
         } catch { fputs("\(error.localizedDescription)\n", stderr); return 1 }
+    }
+
+    /// Hands the files to the running app, whose batch window lets you adjust them before they start.
+    static func openReview(_ files: [URL]) -> Int32 {
+        var c = URLComponents(); c.scheme = "shrinkbox"; c.host = "review"
+        c.queryItems = files.map { URLQueryItem(name: "path", value: $0.path) }
+        guard let url = c.url else { return 1 }
+        let p = Process(); p.executableURL = URL(fileURLWithPath: "/usr/bin/open"); p.arguments = [url.absoluteString]
+        try? p.run(); p.waitUntilExit()
+        return p.terminationStatus
     }
 
     static func crop(_ argv: [String]) async -> Int32 {
