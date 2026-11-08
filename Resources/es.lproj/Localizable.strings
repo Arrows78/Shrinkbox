@@ -206,7 +206,6 @@
 "Optimising…" = "Optimizando…";
 "Optimising files, changing settings, saving pipelines. Reading stays allowed either way" = "Optimizar archivos, cambiar ajustes, guardar pipelines. La lectura sigue permitida en ambos casos";
 "Optional tools" = "Herramientas opcionales";
-"Or drop on a preset" = "O suelta sobre un ajuste preestablecido";
 "Original restored" = "Original restaurado";
 "Originals are backed up first and can be restored" = "Los originales se guardan antes y se pueden restaurar";
 "Otherwise it switches to compact with more than 5 results" = "Si no, cambia a compacto con más de 5 resultados";
@@ -319,3 +318,9 @@
 "Copied" = "Copiado";
 "Show Shrinkbox in screenshots" = "Mostrar Shrinkbox en las capturas de pantalla";
 "Otherwise its windows stay out of screenshots and screen sharing" = "Si no, sus ventanas quedan fuera de las capturas y de compartir pantalla";
+"Drop to optimise" = "Suelta para optimizar";
+"Or drop on a preset above" = "O suelta sobre un ajuste de arriba";
+"Photos, videos, audio, PDFs and folders · hold ⌃ for presets" = "Fotos, vídeos, audio, PDF y carpetas · mantén ⌃ para los ajustes";
+"%d files" = "%d archivos";
+"%d files · saved %@" = "%d archivos · %@ ahorrados";
+"More" = "Más";

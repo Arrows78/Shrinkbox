@@ -204,7 +204,6 @@ Optimising	Optimizando	Optimiere
 Optimising…	Optimizando…	Optimiere…
 Optimising files, changing settings, saving pipelines. Reading stays allowed either way	Optimizar archivos, cambiar ajustes, guardar pipelines. La lectura sigue permitida en ambos casos	Dateien optimieren, Einstellungen ändern, Pipelines speichern. Lesen bleibt in beiden Fällen erlaubt
 Optional tools	Herramientas opcionales	Optionale Werkzeuge
-Or drop on a preset	O suelta sobre un ajuste preestablecido	Oder auf einer Voreinstellung ablegen
 Original restored	Original restaurado	Original wiederhergestellt
 Originals are backed up first and can be restored	Los originales se guardan antes y se pueden restaurar	Originale werden zuerst gesichert und lassen sich wiederherstellen
 Otherwise it switches to compact with more than 5 results	Si no, cambia a compacto con más de 5 resultados	Sonst wird bei mehr als 5 Ergebnissen auf kompakt umgeschaltet
@@ -317,3 +316,9 @@ Optimising aggressively	Optimizando de forma agresiva	Aggressive Optimierung lä
 Copied	Copiado	Kopiert
 Show Shrinkbox in screenshots	Mostrar Shrinkbox en las capturas de pantalla	Shrinkbox in Screenshots anzeigen
 Otherwise its windows stay out of screenshots and screen sharing	Si no, sus ventanas quedan fuera de las capturas y de compartir pantalla	Sonst bleiben seine Fenster aus Screenshots und der Bildschirmfreigabe heraus
+Drop to optimise	Suelta para optimizar	Zum Optimieren ablegen
+Or drop on a preset above	O suelta sobre un ajuste de arriba	Oder auf einer Voreinstellung oben ablegen
+Photos, videos, audio, PDFs and folders · hold ⌃ for presets	Fotos, vídeos, audio, PDF y carpetas · mantén ⌃ para los ajustes	Fotos, Videos, Audio, PDFs und Ordner · ⌃ halten für Voreinstellungen
+%d files	%d archivos	%d Dateien
+%d files · saved %@	%d archivos · %@ ahorrados	%d Dateien · %@ gespart
+More	Más	Mehr

@@ -29,7 +29,7 @@ final class ResultsPanel {
     private var cursorTimer: Timer?
 
     func start() {
-        ResultsModel.shared.changed = { [weak self] in self?.refresh() }
+        ResultsModel.shared.changed = { [weak self] in ResultsModel.shared.objectWillChange.send(); self?.refresh() }
         cursorTimer = Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { _ in MainActor.assumeIsolated { ResultsPanel.shared.followCursor() } }
     }
 
@@ -94,26 +94,58 @@ final class ResultsPanel {
 
 struct DropZoneView: View {
     @ObservedObject var state: DropZoneState
+    @State private var march = false
 
     var body: some View {
-        VStack(spacing: 10) {
-            if state.showPresets {
-                PresetZonesRow(state: state)
+        VStack(spacing: 12) {
+            if state.showPresets { PresetZonesRow(state: state) }
+            ZStack {
+                glassBase
+                VStack(spacing: 10) {
+                    KindsRow(active: state.targeted)
+                    Text("Drop to optimise").font(.system(size: 15, weight: .semibold, design: .rounded))
+                    Text(state.hint).font(.system(size: 11)).foregroundStyle(CardStyle.dim)
+                }
             }
-            VStack(spacing: 6) {
-                Image(systemName: state.targeted ? "arrow.down.circle.fill" : "tray.and.arrow.down.fill").font(.system(size: 26)).foregroundStyle(state.targeted ? Color.accentColor : .white.opacity(0.85))
-                Text("Drop files here").font(.system(size: 13, weight: .semibold))
-                Text(state.hint).font(.system(size: 11)).foregroundStyle(.secondary)
-            }
-            .frame(width: 260, height: 130)
-            .background(Color.black.opacity(0.55), in: RoundedRectangle(cornerRadius: 22, style: .continuous))
-            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
-            .overlay(RoundedRectangle(cornerRadius: 22, style: .continuous).strokeBorder(state.targeted ? Color.accentColor : Color.white.opacity(0.2), style: StrokeStyle(lineWidth: state.targeted ? 2 : 1, dash: [6, 4])))
-            .scaleEffect(state.targeted ? 1.04 : 1)
-            .animation(.spring(response: 0.3, dampingFraction: 0.75), value: state.targeted)
+            .frame(width: 300, height: 156)
+            .scaleEffect(state.targeted ? 1.05 : 1)
+            .shadow(color: state.targeted ? Color.accentColor.opacity(0.5) : Color.black.opacity(0.35), radius: state.targeted ? 24 : 14, y: 6)
+            .animation(.spring(response: 0.32, dampingFraction: 0.72), value: state.targeted)
         }
-        .padding(16)
+        .padding(18)
         .preferredColorScheme(.dark)
+        .onAppear { withAnimation(.linear(duration: 1.2).repeatForever(autoreverses: false)) { march = true } }
+    }
+
+    /// Dark glass with a dashed border that marches when a file is over it.
+    private var glassBase: some View {
+        let shape = RoundedRectangle(cornerRadius: 26, style: .continuous)
+        let colour: Color = state.targeted ? Color.accentColor : Color.white.opacity(0.28)
+        return ZStack {
+            CardStyle.glass(shape)
+            if state.targeted { shape.fill(Color.accentColor.opacity(0.16)) }
+            shape.inset(by: 7).strokeBorder(colour, style: StrokeStyle(lineWidth: state.targeted ? 2 : 1.2, lineCap: .round, dash: [7, 6], dashPhase: march && state.targeted ? -26 : 0))
+        }
+    }
+}
+
+/// The four kinds of file, lifting one after the other while a file is over the zone.
+private struct KindsRow: View {
+    let active: Bool
+    @State private var lift = false
+
+    var body: some View {
+        HStack(spacing: 10) {
+            ForEach(Array(MediaKind.allCases.enumerated()), id: \.offset) { index, kind in
+                Image(systemName: kind.symbol).font(.system(size: 15, weight: .semibold)).foregroundStyle(.white)
+                    .frame(width: 38, height: 38)
+                    .background(RoundedRectangle(cornerRadius: 12, style: .continuous).fill(kind.tint.opacity(active ? 0.9 : 0.55)))
+                    .offset(y: active && lift ? -5 : 0)
+                    .animation(.easeInOut(duration: 0.5).repeatForever(autoreverses: true).delay(Double(index) * 0.12), value: lift)
+            }
+        }
+        .onChange(of: active) { on in lift = on }
+        .onAppear { lift = active }
     }
 }
 
@@ -124,7 +156,7 @@ private struct PresetZonesRow: View {
         let zones: [PresetZone] = Library.load().zones
         HStack(spacing: 8) {
             if zones.isEmpty {
-                Text("No preset zone yet. Add one in Settings › Automation.").font(.system(size: 11)).foregroundStyle(.secondary).padding(8).background(.regularMaterial, in: Capsule())
+                Text("No preset zone yet. Add one in Settings › Automation.").font(.system(size: 11)).foregroundStyle(CardStyle.dim).padding(.horizontal, 12).padding(.vertical, 8).background(CardStyle.glass(Capsule()))
             }
             ForEach(zones) { zone in PresetZoneCard(zone: zone, state: state) }
         }
@@ -143,16 +175,17 @@ private struct PresetZoneCard: View {
     }
 
     var body: some View {
-        let shape = RoundedRectangle(cornerRadius: 14, style: .continuous)
-        let tint: Color = hovered ? Color.accentColor.opacity(0.5) : Color.clear
-        VStack(spacing: 4) {
-            Image(systemName: zone.icon).font(.system(size: 18))
-            Text(verbatim: zone.name).font(.system(size: 10)).lineLimit(1)
+        let shape = RoundedRectangle(cornerRadius: 16, style: .continuous)
+        let tint: Color = hovered ? Color.accentColor.opacity(0.55) : Color.clear
+        VStack(spacing: 5) {
+            Image(systemName: zone.icon).font(.system(size: 19, weight: .semibold))
+            Text(verbatim: zone.name).font(.system(size: 10, weight: .medium)).lineLimit(1)
         }
-        .frame(width: 74, height: 62)
-        .background(tint, in: shape)
-        .background(Color.black.opacity(0.55), in: shape)
-        .background(.regularMaterial, in: shape)
+        .frame(width: 80, height: 66)
+        .background(CardStyle.glass(shape))
+        .overlay(shape.fill(tint))
+        .scaleEffect(hovered ? 1.1 : 1)
+        .animation(.spring(response: 0.28, dampingFraction: 0.7), value: hovered)
         .onDrop(of: [.fileURL], isTargeted: Binding<Bool>(get: { hovered }, set: { setTargeted($0) })) { providers in
             DropZone.handle(providers, zone: zone)
             return true
@@ -165,7 +198,7 @@ final class DropZoneState: ObservableObject {
     @Published var targeted = false
     @Published var showPresets = false
     @Published var hoveredZone: String?
-    var hint: String { showPresets ? L("Or drop on a preset") : L("Hold ⌃ Control for presets") }
+    var hint: String { showPresets ? L("Or drop on a preset above") : L("Photos, videos, audio, PDFs and folders · hold ⌃ for presets") }
 }
 
 @MainActor

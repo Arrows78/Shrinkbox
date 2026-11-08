@@ -204,7 +204,6 @@
 "Optimising…" = "Optimising…";
 "Optimising files, changing settings, saving pipelines. Reading stays allowed either way" = "Optimising files, changing settings, saving pipelines. Reading stays allowed either way";
 "Optional tools" = "Optional tools";
-"Or drop on a preset" = "Or drop on a preset";
 "Original restored" = "Original restored";
 "Originals are backed up first and can be restored" = "Originals are backed up first and can be restored";
 "Otherwise it switches to compact with more than 5 results" = "Otherwise it switches to compact with more than 5 results";
@@ -317,3 +316,9 @@
 "Copied" = "Copied";
 "Show Shrinkbox in screenshots" = "Show Shrinkbox in screenshots";
 "Otherwise its windows stay out of screenshots and screen sharing" = "Otherwise its windows stay out of screenshots and screen sharing";
+"Drop to optimise" = "Drop to optimise";
+"Or drop on a preset above" = "Or drop on a preset above";
+"Photos, videos, audio, PDFs and folders · hold ⌃ for presets" = "Photos, videos, audio, PDFs and folders · hold ⌃ for presets";
+"%d files" = "%d files";
+"%d files · saved %@" = "%d files · saved %@";
+"More" = "More";
