@@ -87,7 +87,7 @@ struct BatchView: View {
                 TableColumn(L("Name")) { (i: BatchItem) in HStack { Image(systemName: i.kind.symbol).foregroundStyle(.secondary); Text(i.file.lastPathComponent).lineLimit(1) } }
                 TableColumn(L("Before")) { (i: BatchItem) in Text(Files.human(i.before)).monospacedDigit() }.width(80)
                 TableColumn(L("After")) { (i: BatchItem) in Text(i.after.map(Files.human) ?? "–").monospacedDigit() }.width(80)
-                TableColumn(L("Saved")) { (i: BatchItem) in Text(i.outcome.map { "-\($0.percent)%" } ?? "").monospacedDigit().foregroundStyle(.green) }.width(60)
+                TableColumn(L("Saved")) { (i: BatchItem) in Text(i.outcome?.changeLabel ?? "").monospacedDigit().foregroundStyle((i.outcome?.percent ?? 0) > 0 ? Color.green : Color.secondary) }.width(60)
                 TableColumn(L("Status")) { (i: BatchItem) in BatchStatusText(item: i) }.width(min: 120)
             }
             Divider()

@@ -30,6 +30,12 @@ struct Outcome: Sendable {
     var changed: Bool { output.path != original.path || newSize != originalSize }
     var saved: Int64 { max(0, originalSize - newSize) }
     var percent: Int { originalSize > 0 ? Int((Double(saved) / Double(originalSize) * 100).rounded()) : 0 }
+    /// "-75%" when smaller, "+159%" when a conversion made it bigger, "0%" otherwise.
+    var changeLabel: String {
+        guard originalSize > 0 else { return "0%" }
+        if newSize > originalSize { return "+\(Int((Double(newSize - originalSize) / Double(originalSize) * 100).rounded()))%" }
+        return percent > 0 ? "-\(percent)%" : "0%"
+    }
 }
 
 /// Everything the consecutive content steps ask for, merged so the file is encoded once.

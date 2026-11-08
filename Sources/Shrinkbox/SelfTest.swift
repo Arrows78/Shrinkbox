@@ -129,6 +129,17 @@ enum SelfTest {
         check("pdf dpi: the stronger the level, the lower the dpi", PDFEngine.dpi(for: .value(5), aggressive: false) > PDFEngine.dpi(for: .value(95), aggressive: false) && PDFEngine.dpi(for: .lossless, aggressive: false) == 300)
         check("speed: atempo chain stays inside 0.5...2", VideoEngine.atempoChain(4).contains("atempo=2.0,atempo=2.0") && VideoEngine.atempoChain(0.25).contains("atempo=0.5"))
         check("quantizer: palette sizes", Quantizer.colors(for: .value(10), aggressive: false) == 256 && Quantizer.colors(for: .value(90), aggressive: false) == 32 && Quantizer.colors(for: .value(40), aggressive: true) < Quantizer.colors(for: .value(40), aggressive: false))
+        var grown = Outcome(original: source, output: source, kind: .image, originalSize: 100, newSize: 250)
+        check("outcome: a bigger file says so", grown.changeLabel == "+150%")
+        grown.newSize = 25
+        check("outcome: a smaller file shows the saving", grown.changeLabel == "-75%" && grown.percent == 75)
+        let fakeApp = FileManager.default.temporaryDirectory.appendingPathComponent("fake-\(UUID().uuidString)/Tool.app/Contents/MacOS", isDirectory: true)
+        try? FileManager.default.createDirectory(at: fakeApp, withIntermediateDirectories: true)
+        let real = fakeApp.appendingPathComponent("tool"); FileManager.default.createFile(atPath: real.path, contents: Data())
+        let link = FileManager.default.temporaryDirectory.appendingPathComponent("link-\(UUID().uuidString)")
+        try? FileManager.default.createSymbolicLink(at: link, withDestinationURL: real)
+        check("bundle: a symlink to the executable leads back to the app", AppBundle.locate(executable: link)?.lastPathComponent == "Tool.app" && AppBundle.locate(executable: URL(fileURLWithPath: "/usr/bin/true")) == nil)
+        try? FileManager.default.removeItem(at: link); try? FileManager.default.removeItem(at: fakeApp.deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent())
         check("shortcuts: defaults are distinct and need a modifier", Set(HotkeyAction.allCases.map { $0.defaultCombo.display }).count == HotkeyAction.allCases.count && HotkeyAction.allCases.allSatisfy { $0.defaultCombo.modifiers != 0 })
         check("reference: the guide names every step", ["optimise", "downscale", "convert", "crop", "targetSize", "stripExif", "watermark", "changeSpeed", "normalize", "runScript", "fork"].allSatisfy { Reference.pipelineGuide.contains($0) })
     }

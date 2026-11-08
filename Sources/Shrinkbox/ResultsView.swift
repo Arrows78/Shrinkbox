@@ -64,7 +64,7 @@ struct SizeLine: View {
             if let o = item.outcome {
                 HStack(spacing: 6) {
                     Text(verbatim: "\(Files.human(o.originalSize)) → \(Files.human(o.newSize))").monospacedDigit()
-                    Text(verbatim: o.percent > 0 ? "-\(o.percent)%" : "0%").fontWeight(.semibold).foregroundStyle(o.percent > 0 ? Color.green : .secondary)
+                    Text(verbatim: o.changeLabel).fontWeight(.semibold).foregroundStyle(o.percent > 0 ? Color.green : (o.newSize > o.originalSize ? Color.orange : .white.opacity(0.7)))
                 }
             }
         case .skipped(let m): Text(verbatim: m).foregroundStyle(.white.opacity(0.7))
@@ -113,7 +113,7 @@ struct CompactRow: View {
             Text(verbatim: item.current.lastPathComponent).font(.system(size: 11)).lineLimit(1).truncationMode(.middle)
             Spacer(minLength: 4)
             if let p = item.progress { ProgressView(value: p > 0 ? p : nil).progressViewStyle(.circular).controlSize(.small) }
-            else if let o = item.outcome, case .done = item.state { Text(verbatim: o.percent > 0 ? "-\(o.percent)%" : "0%").font(.system(size: 11, weight: .semibold)).foregroundStyle(o.percent > 0 ? Color.green : .secondary) }
+            else if let o = item.outcome, case .done = item.state { Text(verbatim: o.changeLabel).font(.system(size: 11, weight: .semibold)).foregroundStyle(o.percent > 0 ? Color.green : (o.newSize > o.originalSize ? Color.orange : .white.opacity(0.7))) }
             else if case .failed = item.state { Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.orange) }
             Menu { ActionMenu(item: item) } label: { Image(systemName: "ellipsis.circle") }.menuStyle(.borderlessButton).menuIndicator(.hidden).fixedSize()
         }
