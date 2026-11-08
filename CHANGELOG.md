@@ -4,6 +4,16 @@ All notable changes to Shrinkbox are listed here, newest first. The file is gene
 from the commit messages (Conventional Commits) and the `v*` tags: do not edit it by hand. See
 `docs/RELEASING.md`. Versions follow [Semantic Versioning](https://semver.org).
 
+## [0.3.0] - 2026-11-08
+
+### Added
+
+- **settings**: Adaptive theme, grouped sidebar, Permissions, Backup and a fuller About page
+
+### Fixed
+
+- Keep user files in the work folder, uppercase extensions, MCP cannot lift script protection
+
 ## [0.2.0] - 2026-11-08
 
 ### Added
@@ -36,5 +46,6 @@ from the commit messages (Conventional Commits) and the `v*` tags: do not edit i
 
 - Initial release.
 
+[0.3.0]: https://github.com/Arrows78/Shrinkbox/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/Arrows78/Shrinkbox/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/Arrows78/Shrinkbox/releases/tag/v0.1.0
