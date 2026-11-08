@@ -86,7 +86,11 @@ enum AudioEngine {
         input.expectsMediaDataInRealTime = false
         guard writer.canAdd(input) else { throw ShrinkError.unsupported(L("Shrinkbox cannot write %@ files", ext.uppercased())) }
         writer.add(input)
-        if !job.stripMetadata && job.coverArt != "remove" { writer.metadata = try await asset.load(.metadata) }
+        // All the tags when metadata is kept; only the cover art otherwise, unless it is to be removed.
+        if job.coverArt != "remove" {
+            let all = try await asset.load(.metadata)
+            writer.metadata = job.stripMetadata && job.coverArt != "keep" ? all.filter { $0.commonKey == .commonKeyArtwork } : all
+        }
 
         let outputSettings: [String: Any] = [AVFormatIDKey: kAudioFormatLinearPCM, AVLinearPCMBitDepthKey: 16, AVLinearPCMIsFloatKey: false, AVLinearPCMIsBigEndianKey: false, AVLinearPCMIsNonInterleaved: false]
         let output = AVAssetReaderAudioMixOutput(audioTracks: [ct], audioSettings: outputSettings)
