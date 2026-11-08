@@ -18,7 +18,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         applyMenuBarIcon()
         registerHotkeys()
         setupDragMonitors()
-        NotificationCenter.default.addObserver(forName: .settingsChanged, object: nil, queue: .main) { _ in MainActor.assumeIsolated { (NSApp.delegate as? AppDelegate)?.applyMenuBarIcon() } }
+        NotificationCenter.default.addObserver(forName: .settingsChanged, object: nil, queue: .main) { n in MainActor.assumeIsolated { (NSApp.delegate as? AppDelegate)?.applyMenuBarIcon(); if (n.object as? String) == "triggerKeys" { ResultKeys.shared.reload() } } }
         NotificationCenter.default.addObserver(forName: .hotkeysChanged, object: nil, queue: .main) { _ in MainActor.assumeIsolated { (NSApp.delegate as? AppDelegate)?.registerHotkeys() } }
         DistributedNotificationCenter.default().addObserver(forName: .clearResults, object: nil, queue: .main) { _ in MainActor.assumeIsolated { ResultsModel.shared.clearAll() } }
         // Old working files go after a few days.
@@ -54,15 +54,25 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     // MARK: Menu bar
 
+    /// The symbol of the menu bar icon, from the style setting.
+    static var iconSymbol: String {
+        switch Prefs.string("menubarIconStyle") {
+        case "box": "shippingbox.fill"
+        case "geometric": "square.on.circle"
+        default: "arrow.down.right.and.arrow.up.left"
+        }
+    }
+
     func applyMenuBarIcon() {
         if Prefs.bool("showMenubarIcon") {
             if statusItem == nil {
                 let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
-                item.button?.image = NSImage(systemSymbolName: "arrow.down.right.and.arrow.up.left", accessibilityDescription: "Shrinkbox")
+                item.button?.image = NSImage(systemSymbolName: Self.iconSymbol, accessibilityDescription: "Shrinkbox")
                 let menu = NSMenu(); menu.delegate = self
                 item.menu = menu
                 statusItem = item
             }
+            statusItem?.button?.image = NSImage(systemSymbolName: Self.iconSymbol, accessibilityDescription: "Shrinkbox")
             statusItem?.button?.appearsDisabled = Prefs.bool("pauseAutomations")
         } else if let item = statusItem { NSStatusBar.system.removeStatusItem(item); statusItem = nil }
     }
@@ -85,6 +95,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         menu.addItem(.separator())
         add(L("Optimise files…"), "wand.and.stars", #selector(chooseFiles))
         add(L("Optimise the clipboard"), "doc.on.clipboard", #selector(optimiseClipboardNow))
+        add(L("Optimise the clipboard aggressively"), "bolt.fill", #selector(optimiseClipboardAggressively))
         add(L("Show the drop zone"), "tray.and.arrow.down", #selector(showDropZone))
         menu.addItem(.separator())
         let results = ResultsModel.shared.items
@@ -100,12 +111,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         menu.addItem(quit)
     }
 
-    @objc private func togglePause() { Prefs.set("pauseAutomations", Prefs.bool("pauseAutomations") ? "false" : "true") }
+    @objc private func togglePause() {
+        let paused = !Prefs.bool("pauseAutomations")
+        Prefs.set("pauseAutomations", paused ? "true" : "false")
+        OSD.show(L(paused ? "Optimisation paused" : "Optimisation resumed"), symbol: paused ? "pause.circle.fill" : "play.circle.fill")
+    }
     @objc private func openSettings() { SettingsWindow.show() }
     @objc private func showDropZone() { DropZone.show() }
     @objc private func clearResults() { ResultsModel.shared.clearAll() }
     @objc private func showLog() { NSWorkspace.shared.open(Log.url) }
     @objc private func optimiseClipboardNow() { optimiseClipboard() }
+    @objc private func optimiseClipboardAggressively() { optimiseClipboard(aggressive: true) }
 
     @objc private func chooseFiles() {
         let p = NSOpenPanel(); p.canChooseFiles = true; p.canChooseDirectories = true; p.allowsMultipleSelection = true
@@ -127,25 +143,42 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private func run(_ a: HotkeyAction) {
         switch a {
         case .optimiseClipboard: optimiseClipboard()
+        case .optimiseClipboardAggressively: optimiseClipboard(aggressive: true)
         case .optimiseSelection: optimiseFinderSelection()
         case .togglePause: togglePause()
+        case .skipNextClipboard: ClipboardWatcher.shared.skipNext(); OSD.show(L("The next clipboard copy will be ignored"), symbol: "forward.end.fill")
+        case .stopAll: ResultsModel.shared.stopAll(); OSD.show(L("Everything stopped"), symbol: "stop.circle.fill")
         case .clearResults: ResultsModel.shared.clearAll()
         case .showDropZone: DropZone.show()
         }
     }
 
-    /// Whatever the clipboard holds that Shrinkbox can read, now, whatever the clipboard settings say.
-    func optimiseClipboard() {
+    /// Whatever the clipboard holds that Shrinkbox can read, now, whatever the clipboard settings say: image data, copied
+    /// files, or a path or a link written as text.
+    func optimiseClipboard(aggressive: Bool = false) {
         let pb = NSPasteboard.general
+        func run(_ urls: [URL]) {
+            if aggressive {
+                let steps: [Step] = [.optimise(encoder: "aggressive", compression: nil, adaptive: nil, dpi: nil, location: nil)]
+                ResultsModel.shared.enqueuePipeline(urls, pipeline: Pipeline(steps: steps), source: .manual, copyWhenDone: Prefs.bool("autoCopyToClipboard"))
+            } else {
+                ResultsModel.shared.enqueue(urls, source: .manual, forceTemporary: true, clipboard: true) { _, _ in
+                    ClipboardWatcher.shared.write(ResultsModel.shared.items.filter { $0.isClipboard }.compactMap { $0.outcome?.output }, image: nil) }
+            }
+        }
         if let files = pb.readObjects(forClasses: [NSURL.self], options: [.urlReadingFileURLsOnly: true]) as? [URL], !files.isEmpty {
             let supported = Media.collect(files, recursive: false)
-            if !supported.isEmpty { ResultsModel.shared.enqueue(supported, source: .manual, forceTemporary: true, clipboard: true) { _, _ in
-                ClipboardWatcher.shared.write(ResultsModel.shared.items.filter { $0.isClipboard }.compactMap { $0.outcome?.output }, image: nil) }; return }
+            if !supported.isEmpty { run(supported); return }
         }
-        guard let data = pb.data(forType: .png) ?? pb.data(forType: .tiff), let rep = NSBitmapImageRep(data: data), let png = rep.representation(using: .png, properties: [:]) else { NSSound.beep(); return }
-        let file = Workspace.temp(ext: "png", name: "clipboard")
-        try? png.write(to: file)
-        ResultsModel.shared.enqueue([file], source: .manual, forceTemporary: true, clipboard: true) { _, o in ClipboardWatcher.shared.write([o.output], image: NSImage(contentsOf: o.output)) }
+        if let data = pb.data(forType: .png) ?? pb.data(forType: .tiff), let rep = NSBitmapImageRep(data: data), let png = rep.representation(using: .png, properties: [:]) {
+            let file = Workspace.temp(ext: "png", name: "clipboard")
+            try? png.write(to: file)
+            run([file]); return
+        }
+        // A path or a link copied as text.
+        let texts = textPaths(pb)
+        if !texts.isEmpty { DropZone.process(texts); return }
+        OSD.show(L("Nothing to optimise on the clipboard"), symbol: "exclamationmark.circle")
     }
 
     /// The files selected in the Finder, through Apple events.
@@ -221,7 +254,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         DispatchQueue.main.async { MainActor.assumeIsolated { ResultsModel.shared.enqueuePipeline(Media.collect(files, recursive: false), pipeline: Pipeline(steps: [.stripExif]), source: .manual, copyWhenDone: false) } }
     }
 
-    private func textPaths(_ pb: NSPasteboard) -> [URL] {
+    func textPaths(_ pb: NSPasteboard) -> [URL] {
         (pb.string(forType: .string) ?? "").split(whereSeparator: \.isNewline).compactMap {
             let t = $0.trimmingCharacters(in: .whitespaces)
             if let u = URL(string: t), u.scheme?.hasPrefix("http") == true { return u }

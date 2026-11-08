@@ -125,6 +125,11 @@ final class ClipboardWatcher {
     private var lastAccumulation = Date.distantPast
     private var ownChange = -1
 
+    private var skipping = false
+
+    /// The next change of the clipboard is left alone.
+    func skipNext() { skipping = true }
+
     func start() { timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { _ in MainActor.assumeIsolated { ClipboardWatcher.shared.tick() } } }
 
     /// Puts files on the clipboard without Shrinkbox looking at them again.
@@ -140,6 +145,7 @@ final class ClipboardWatcher {
         let pb = NSPasteboard.general
         guard pb.changeCount != lastChange else { return }
         lastChange = pb.changeCount
+        if skipping { skipping = false; return }
         guard pb.changeCount != ownChange, Prefs.bool("enableClipboardOptimiser"), !Prefs.bool("pauseAutomations") else { return }
         let front = NSWorkspace.shared.frontmostApplication?.bundleIdentifier ?? ""
         if Prefs.list("ignoredApps").contains(front) { return }
