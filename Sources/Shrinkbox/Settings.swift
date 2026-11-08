@@ -43,6 +43,7 @@ enum Prefs {
         add("optimisedFileProtectionMs", "Re-optimisation loop detection window", group: "General", section: "Optimisation", .int(0...30_000), "3000", help: "In milliseconds. Increase it if files on iCloud Drive get optimised twice")
         add("workdir", "Working directory path", group: "General", section: "Working directory", .text, "", help: "Empty: ~/Library/Caches/Shrinkbox")
         add("workdirCleanupDays", "Delete working files older than", group: "General", section: "Working directory", .int(0...365), "7", help: "In days. 0 keeps everything")
+        add("menubarIconStyle", "Menu bar icon style", group: "General", section: "Appearance", .choice(["arrows", "box", "geometric"]), "arrows")
         add("showMenubarIcon", "Menu bar icon", group: "General", section: "Appearance", .bool, "true")
         add("pauseAutomations", "Pause automatic optimisations", group: "General", section: "Appearance", .bool, "false")
         add("allowShrinkboxInScreenshots", "Show Shrinkbox in screenshots", group: "General", section: "Appearance", .bool, "false", help: "Otherwise its windows stay out of screenshots and screen sharing")
@@ -133,6 +134,7 @@ enum Prefs {
         add("autoCopyToClipboard", "Copy optimised files to the clipboard", group: "Drop Zone", section: "Drop zone", .bool, "true", help: "So they can be pasted right after the optimisation ends")
         add("useBatchMode", "Use batch mode for large drops", group: "Drop Zone", section: "Batch mode", .bool, "true", help: "Originals are backed up first and can be restored")
         add("batchModeFileCountThreshold", "Batch mode file threshold", group: "Drop Zone", section: "Batch mode", .int(2...1000), "30")
+        add("triggerKeys", "Trigger keys", group: "Floating Results", section: "Keys", .choice(["controlCommand", "controlOption", "controlShift", "optionCommand", "controlOptionCommand"]), "controlCommand", help: "Hold them and press a letter to act on the result under the pointer, or a digit to crop it to a saved size")
         add("onlyShowPresetZonesOnControlTapped", "Keep preset zones up after tapping Control", group: "Drop Zone", section: "Preset zones", .bool, "false")
         // Floating results
         add("enableFloatingResults", "Show floating results", group: "Floating Results", section: "Floating results", .bool, "true", help: "Off: Shrinkbox keeps optimising in the background without any window")

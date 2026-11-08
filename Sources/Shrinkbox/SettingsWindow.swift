@@ -123,6 +123,12 @@ struct ShortcutsPane: View {
                     SettingsRow(title: LocalizedStringKey(a.title)) { ShortcutField(action: a) }
                 }
             }
+            SettingsCard(title: "Keys of the floating results") {
+                PrefRow(pref: Prefs.byKey["triggerKeys"]!)
+                ForEach(ResultKeys.Key.allCases) { k in SettingsRow(title: LocalizedStringKey(k.title)) { Keycaps(ResultKeys.trigger.label + k.letter) } }
+                SettingsRow(title: "Crop to the saved size number 1 to 9", subtitle: "The sizes are those of the crop menu.") { Keycaps(ResultKeys.trigger.label + "1…9") }
+            }
+            SettingsNote("These keys only work while results are on screen. They act on the result under the pointer, or on the latest one.")
             SettingsNote("Hold ⌥ Option while dragging files to show the drop zone when it is set to need it, and hold ⌃ Control to show the preset zones.")
         }
     }
@@ -239,5 +245,20 @@ enum SettingsWindow {
         }
         NSApp.activate(ignoringOtherApps: true)
         window?.center(); window?.makeKeyAndOrderFront(nil)
+    }
+}
+
+/// A shortcut drawn as keycaps.
+struct Keycaps: View {
+    let keys: String
+    init(_ keys: String) { self.keys = keys }
+
+    var body: some View {
+        HStack(spacing: 3) {
+            ForEach(Array(keys.enumerated()), id: \.offset) { _, k in
+                Text(String(k)).font(.system(size: 12, weight: .medium, design: .rounded)).frame(minWidth: 22, minHeight: 22)
+                    .background(Color.white.opacity(0.1), in: RoundedRectangle(cornerRadius: 5))
+            }
+        }
     }
 }

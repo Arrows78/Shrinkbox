@@ -22,7 +22,7 @@ for lang in ("es", "de"):
     for k in sorted(keys - known): errors.append(f"{lang}: unknown key \"{k}\"")
 
 # Literals that are not words to translate: symbols, units, code, brand names.
-ignore = {"", "x", "·", "…", "C", "D", "F", "O", "P", "audio", "video", "shrinkbox.audio", "MCP"}
+ignore = {"", "x", "·", "…", "C", "D", "F", "O", "P", "A", "S", "X", "audio", "video", "shrinkbox.audio", "MCP"}
 # The command line speaks English: its usage and syntax errors are not translated.
 cli_only = ("Usage:", "Give ", "--size is required", "Expected key", "capFps needs", "changeSpeed needs", "lowerBitrate needs", "crop needs", "downscale needs",
             "A pipeline named", "A zone with this name", "No saved pipeline with this name", "Unknown step", "%@ needs", "%@ is needed %@")

@@ -303,6 +303,14 @@ struct PrefRow: View {
     static func label(_ value: String) -> String {
         if let l = Builtins.label(forAction: value) { return l }
         switch value {
+        case "arrows": return L("Arrows")
+        case "box": return L("Box")
+        case "geometric": return L("Geometric")
+        case "controlCommand": return "⌃⌘"
+        case "controlOption": return "⌃⌥"
+        case "controlShift": return "⌃⇧"
+        case "optionCommand": return "⌥⌘"
+        case "controlOptionCommand": return "⌃⌥⌘"
         case "airDrop": return L("AirDrop")
         case "addToShelf": return L("Add to shelf")
         case "uploadWithDropshare": return L("Upload with Dropshare")
