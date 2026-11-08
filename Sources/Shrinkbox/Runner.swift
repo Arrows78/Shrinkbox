@@ -296,8 +296,12 @@ enum Runner {
         if isCode { r = try await Run.process(zsh, ["-c", s, "shrinkbox", file.path], environment: env) }
         else { r = try await Run.process(URL(fileURLWithPath: (s as NSString).expandingTildeInPath), [file.path], environment: env) }
         guard r.status == 0 else { throw ShrinkError.failed(String(r.error.suffix(300))) }
-        let last = r.output.split(separator: "\n").last.map(String.init)?.trimmingCharacters(in: .whitespaces) ?? ""
-        return (!last.isEmpty && FileManager.default.fileExists(atPath: last)) ? URL(fileURLWithPath: last) : nil
+        // The printed path may be followed by other output: the last line that names an existing file wins.
+        for line in r.output.split(whereSeparator: \.isNewline).reversed() {
+            let path = line.trimmingCharacters(in: .whitespaces)
+            if !path.isEmpty, FileManager.default.fileExists(atPath: path) { return URL(fileURLWithPath: path) }
+        }
+        return nil
     }
 
     // MARK: Passes

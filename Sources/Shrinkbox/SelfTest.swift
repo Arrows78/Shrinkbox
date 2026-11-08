@@ -391,8 +391,8 @@ enum SelfTest {
 
             // Script step
             let y = fresh("y.jpg")
-            let yr = try await Runner.run(y, PipelineParser.parse("runScript(code: \"cp $1 \(work.path)/scripted.jpg; echo \(work.path)/scripted.jpg\")"))
-            check("runner: a script's printed path replaces the file", yr.output.path == work.appendingPathComponent("scripted.jpg").path, yr.output.path)
+            let yr = try await Runner.run(y, PipelineParser.parse("runScript(code: \"cp $1 \(work.path)/scripted.jpg && echo \(work.path)/scripted.jpg\")"))
+            check("runner: a script's printed path replaces the file", yr.output.path == work.appendingPathComponent("scripted.jpg").path, "\(yr.output.path) \(yr.notes)")
 
             // Library: automations
             var lib = Library.Content()
