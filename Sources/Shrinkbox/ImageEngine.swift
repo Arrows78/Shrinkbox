@@ -300,7 +300,8 @@ enum ImageEngine {
 
     static func processGIF(_ src: URL, source: CGImageSource, job: ImageJob) async throws -> URL {
         let out = Workspace.temp(ext: "gif", name: src.deletingPathExtension().lastPathComponent)
-        if let g = Tool.gifsicle.url {
+        // gifsicle only compresses and scales here: a crop goes through the frame by frame path below.
+        if job.crop == nil, let g = Tool.gifsicle.url {
             var args = ["-O3", "--no-comments", "--no-names", "--no-extensions"]
             if job.level != .lossless { args.append("--lossy=\(Int(job.level.strength * 120))") }
             if let f = job.downscale, f < 1 { args += ["--scale", String(f)] }

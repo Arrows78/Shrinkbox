@@ -34,6 +34,7 @@ enum PDFEngine {
         if let crop = job.crop {
             input = try applyCrop(crop, to: src)   // a real crop box, then compressed
         }
+        defer { if input != src { try? FileManager.default.removeItem(at: input.deletingLastPathComponent()) } }
         if let gs = Tool.gs.url {
             let quality = max(20, 90 - Int(job.level.strength * 60))
             let args = ["-q", "-dNOPAUSE", "-dBATCH", "-dSAFER", "-sDEVICE=pdfwrite", "-dCompatibilityLevel=1.6", "-dDownsampleColorImages=true", "-dColorImageResolution=\(dpi)",

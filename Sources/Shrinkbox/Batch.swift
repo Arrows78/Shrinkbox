@@ -94,7 +94,7 @@ final class BatchModel: ObservableObject {
                 item.status = .running
                 do {
                     let o: Outcome
-                    if let pipeline = params.pipeline(for: item.kind) { o = try await Runner.run(item.file, pipeline, context: RunContext(source: source)) }
+                    if let pipeline = params.pipeline(for: item.kind) { o = try await Optimiser.gated(item.kind) { try await Runner.run(item.file, pipeline, context: RunContext(source: source)) } }
                     else { o = try await Optimiser.run(item.file, source: source) }
                     Protection.shared.mark(o.output)
                     item.outcome = o

@@ -2,7 +2,7 @@
 # Imports a code-signing identity into a temporary keychain and prints its SHA-1 hash, so the release build can be signed with it.
 #   SIGNING_P12       the .p12 file, base64 encoded (a repository secret)
 #   SIGNING_PASSWORD  its password (a repository secret)
-#   $1                the identity's name, e.g. "Snapix Local Signing"
+#   $1                the identity's name, e.g. "Shrinkbox Local Signing"
 # Prints nothing and succeeds when no .p12 is provided: the caller then keeps the ad hoc signature.
 # A stable identity is what lets macOS keep the privacy permissions (screen recording...) across updates.
 set -eu

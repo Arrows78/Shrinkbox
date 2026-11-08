@@ -101,6 +101,8 @@ enum MCPServer {
         case "get_settings": return (true, Prefs.schema())
         case "set_setting":
             guard let k = args["key"] as? String, let v = args["value"] as? String else { return (false, "key and value are required") }
+            // The switches that limit agents are the user's to change, not an agent's.
+            if k.hasPrefix("mcp") { return (false, "The settings of agents can only be changed in Settings › Agents.") }
             if let e = Prefs.set(k, v) { return (false, e) }
             return (true, "\(k) = \(Prefs.string(k))")
         case "available_tools":

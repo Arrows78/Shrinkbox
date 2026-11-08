@@ -176,7 +176,7 @@ struct StepOutput: Sendable {
 enum Workspace {
     static var root: URL {
         if let p = ProcessInfo.processInfo.environment["SHRINKBOX_WORKDIR"] { return URL(fileURLWithPath: p, isDirectory: true) }
-        let configured = UserDefaults.standard.string(forKey: "workdir") ?? ""
+        let configured = Prefs.string("workdir")
         let path = configured.isEmpty ? (NSHomeDirectory() as NSString).appendingPathComponent("Library/Caches/Shrinkbox") : (configured as NSString).expandingTildeInPath
         return URL(fileURLWithPath: path, isDirectory: true)
     }
@@ -187,13 +187,20 @@ enum Workspace {
         return dir.appendingPathComponent((name ?? "file") + (ext.isEmpty ? "" : "." + ext))
     }
 
-    /// Deletes what is older than `days` days.
+    /// Deletes the working files older than `days` days. Only what Shrinkbox itself made goes (folders named by a UUID, and
+    /// the same inside `backups`): the working directory can be any folder the user picked, with files of their own.
     static func clean(olderThanDays days: Int) {
-        guard days > 0, let items = try? FileManager.default.contentsOfDirectory(at: root, includingPropertiesForKeys: [.contentModificationDateKey]) else { return }
+        guard days > 0 else { return }
+        let fm = FileManager.default
         let limit = Date().addingTimeInterval(-Double(days) * 86400)
-        for item in items {
-            if let d = try? item.resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate, d < limit { try? FileManager.default.removeItem(at: item) }
+        func sweep(_ folder: URL) {
+            guard let items = try? fm.contentsOfDirectory(at: folder, includingPropertiesForKeys: [.contentModificationDateKey]) else { return }
+            for item in items where UUID(uuidString: item.lastPathComponent) != nil {
+                if let d = try? item.resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate, d < limit { try? fm.removeItem(at: item) }
+            }
         }
+        sweep(root)
+        sweep(root.appendingPathComponent("backups", isDirectory: true))
     }
 }
 
@@ -330,6 +337,9 @@ enum Output {
         let name = source.deletingPathExtension().lastPathComponent
         switch placement {
         case .inPlace:
+            // Same format: the file keeps its own name, whatever the case of its extension (IMG_1.JPG): on a
+            // case-insensitive volume "IMG_1.jpg" is the file itself and moving the result there would fail.
+            if Media.sameFormat(source.pathExtension, ext) { return source }
             return source.deletingPathExtension().appendingPathExtension(ext)
         case .sameFolder:
             let t = (template?.isEmpty == false) ? template! : "%f-optimised"

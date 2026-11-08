@@ -104,7 +104,7 @@ final class ResultsModel: ObservableObject {
                     item.state = .running(0)
                     var ctx = RunContext(source: source); ctx.counter = i + 1
                     ctx.progress = { p in Task { @MainActor in if case .running = item.state { item.state = .running(p) } } }
-                    let o = try await Runner.run(url, pipeline, context: ctx)
+                    let o = try await Optimiser.gated(kind) { try await Runner.run(url, pipeline, context: ctx) }
                     Protection.shared.mark(o.output)
                     item.outcome = o
                     item.state = .done
@@ -134,7 +134,7 @@ final class ResultsModel: ObservableObject {
                     item.state = .running(0)
                     var ctx = RunContext(source: source); ctx.counter = i + 1; ctx.forceTemporary = clipboard
                     ctx.progress = { p in Task { @MainActor in if case .running = item.state { item.state = .running(p) } } }
-                    let o = try await Runner.run(url, pipeline, context: ctx)
+                    let o = try await Optimiser.gated(kind) { try await Runner.run(url, pipeline, context: ctx) }
                     Protection.shared.mark(o.output)
                     item.outcome = o
                     item.state = .done
@@ -203,7 +203,7 @@ final class ResultsModel: ObservableObject {
                 var ctx = RunContext(source: item.source)
                 ctx.forceTemporary = item.isClipboard
                 ctx.progress = { p in Task { @MainActor in if case .running = item.state { item.state = .running(p) } } }
-                let o = try await Runner.run(item.file, Pipeline(steps: steps), context: ctx)
+                let o = try await Optimiser.gated(item.kind) { try await Runner.run(item.file, Pipeline(steps: steps), context: ctx) }
                 Protection.shared.mark(o.output)
                 item.outcome = o
                 item.state = .done
@@ -296,7 +296,7 @@ final class ResultsModel: ObservableObject {
         item.task = Task { [weak self, weak item] in
             guard let item else { return }
             do {
-                let o = try await Runner.run(source, Pipeline(steps: [.convert(to: ext, location: loc ?? "inPlace")]))
+                let o = try await Optimiser.gated(item.kind) { try await Runner.run(source, Pipeline(steps: [.convert(to: ext, location: loc ?? "inPlace")])) }
                 Protection.shared.mark(o.output)
                 var merged = item.outcome ?? o
                 merged.output = o.output; merged.newSize = o.newSize
@@ -315,6 +315,8 @@ final class ResultsModel: ObservableObject {
         panel.nameFieldStringValue = item.current.lastPathComponent
         NSApp.activate(ignoringOtherApps: true)
         guard panel.runModal() == .OK, let url = panel.url else { return }
+        // Saving over the file itself would delete it before it is copied.
+        guard url.standardizedFileURL.path != item.current.standardizedFileURL.path else { return }
         try? FileManager.default.removeItem(at: url)
         try? FileManager.default.copyItem(at: item.current, to: url)
     }

@@ -47,6 +47,14 @@ final class Protection: @unchecked Sendable {
 enum Optimiser {
     private static let gates: [MediaKind: Gate] = [.image: Gate(4), .pdf: Gate(2), .audio: Gate(2), .video: Gate(1)]
 
+    /// Runs `work` once the engine of that kind has room, like `run` does: many files at once must not all encode together.
+    static func gated<T>(_ kind: MediaKind, _ work: () async throws -> T) async throws -> T {
+        let gate = gates[kind]!
+        await gate.acquire()
+        defer { Task { await gate.release() } }
+        return try await work()
+    }
+
     /// Runs what a file gets from a source: the implicit conversion and optimisation, then the attached pipelines.
     static func run(_ file: URL, source: PipelineSource, copiedBy: String? = nil, forceTemporary: Bool = false, counter: Int = 1,
                     progress: (@Sendable (Double) -> Void)? = nil) async throws -> Outcome {

@@ -262,8 +262,9 @@ enum CLI {
         guard let to = (a.value("to") ?? a.value("format"))?.lowercased() else { fputs("--to is required (for example webp, jpeg, mp4, gif, mp3)\n", stderr); return 64 }
         do {
             let files = try await inputs(a, defaultKinds: kinds ?? [.image, .video, .audio])
-            var q = a.value("compression") ?? a.value("quality")
-            if let n = q.flatMap({ Int($0) }) { q = String(100 - n) }   // a quality is the opposite of a compression
+            var q = a.value("compression")
+            // A quality is the opposite of a compression; a compression is used as it is.
+            if q == nil, let quality = a.value("quality") { q = Int(quality).map { String(100 - $0) } ?? quality }
             var steps: [Step] = []
             if let kb = a.value("bitrate").flatMap(Int.init) { steps.append(.lowerBitrate(kbps: kb, location: nil)) }
             steps.insert(.convert(to: to, location: location(a, kind: nil)), at: 0)
