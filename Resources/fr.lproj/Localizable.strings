@@ -479,3 +479,11 @@
 "Copy the path to the clipboard" = "Copier le chemin dans le presse-papiers";
 "Keep a second card" = "Garder une seconde carte";
 "Run a Shortcut" = "Lancer un raccourci";
+"Asks Photos for the original of the copied photos, instead of the small preview" = "Demande à Photos l’original des photos copiées, au lieu du petit aperçu";
+"Dismiss a result once it is sent to a shelf app or Dropshare" = "Fermer un résultat une fois envoyé à une app d’étagère ou à Dropshare";
+"Downscale to a longest side of (0: no limit)" = "Réduire à un plus grand côté de (0 : sans limite)";
+"Optimise images copied from Photos" = "Optimiser les images copiées depuis Photos";
+"Photos crop orientation" = "Orientation du recadrage des photos";
+"Photos integration" = "Intégration de Photos";
+"Photos to take at once" = "Photos à prendre en une fois";
+"Which way to crop images coming from Photos" = "Dans quel sens recadrer les images venant de Photos";

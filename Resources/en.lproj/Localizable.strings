@@ -479,3 +479,11 @@
 "Copy the path to the clipboard" = "Copy the path to the clipboard";
 "Keep a second card" = "Keep a second card";
 "Run a Shortcut" = "Run a Shortcut";
+"Asks Photos for the original of the copied photos, instead of the small preview" = "Asks Photos for the original of the copied photos, instead of the small preview";
+"Dismiss a result once it is sent to a shelf app or Dropshare" = "Dismiss a result once it is sent to a shelf app or Dropshare";
+"Downscale to a longest side of (0: no limit)" = "Downscale to a longest side of (0: no limit)";
+"Optimise images copied from Photos" = "Optimise images copied from Photos";
+"Photos crop orientation" = "Photos crop orientation";
+"Photos integration" = "Photos integration";
+"Photos to take at once" = "Photos to take at once";
+"Which way to crop images coming from Photos" = "Which way to crop images coming from Photos";
