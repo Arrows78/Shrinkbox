@@ -1,4 +1,4 @@
-// Usage: swift make_icon.swift <output.png>   (renders the 1024px app icon: a notch island hanging from a gradient tile)
+// Usage: swift make_icon.swift <output.png>   (renders the 1024px app icon: a card squeezed by four arrows)
 import AppKit
 
 let size: CGFloat = 1024
@@ -20,49 +20,60 @@ ctx.setFillColor(NSColor.black.cgColor)
 ctx.addPath(tile); ctx.fillPath()
 ctx.restoreGState()
 
-// Gradient tile (warm, coral to orange) with a soft highlight.
+// Gradient tile (teal to deep green) with a soft highlight.
 ctx.saveGState()
 ctx.addPath(tile); ctx.clip()
-let g = CGGradient(colorsSpace: space, colors: [NSColor(srgbRed: 1.00, green: 0.42, blue: 0.45, alpha: 1).cgColor,
-                                                NSColor(srgbRed: 1.00, green: 0.62, blue: 0.20, alpha: 1).cgColor] as CFArray, locations: nil)!
+let g = CGGradient(colorsSpace: space, colors: [NSColor(srgbRed: 0.18, green: 0.80, blue: 0.62, alpha: 1).cgColor,
+                                                NSColor(srgbRed: 0.05, green: 0.42, blue: 0.48, alpha: 1).cgColor] as CFArray, locations: nil)!
 ctx.drawLinearGradient(g, start: CGPoint(x: 100, y: 924), end: CGPoint(x: 924, y: 100), options: [])
-let hl = CGGradient(colorsSpace: space, colors: [NSColor.white.withAlphaComponent(0.20).cgColor, NSColor.white.withAlphaComponent(0).cgColor] as CFArray, locations: nil)!
+let hl = CGGradient(colorsSpace: space, colors: [NSColor.white.withAlphaComponent(0.22).cgColor, NSColor.white.withAlphaComponent(0).cgColor] as CFArray, locations: nil)!
 ctx.drawLinearGradient(hl, start: CGPoint(x: 512, y: 924), end: CGPoint(x: 512, y: 560), options: [])
+ctx.restoreGState()
 
-// The island: flat on the top edge, round at the bottom, like an expanded notch.
-let island = CGRect(x: 232, y: 454, width: 560, height: 470)
-let r: CGFloat = 150
-let p = CGMutablePath()
-p.move(to: CGPoint(x: island.minX, y: island.maxY))
-p.addLine(to: CGPoint(x: island.minX, y: island.minY + r))
-p.addArc(tangent1End: CGPoint(x: island.minX, y: island.minY), tangent2End: CGPoint(x: island.minX + r, y: island.minY), radius: r)
-p.addLine(to: CGPoint(x: island.maxX - r, y: island.minY))
-p.addArc(tangent1End: CGPoint(x: island.maxX, y: island.minY), tangent2End: CGPoint(x: island.maxX, y: island.minY + r), radius: r)
-p.addLine(to: CGPoint(x: island.maxX, y: island.maxY))
-p.closeSubpath()
+// The card: a photo with a sun and two hills, drawn small in the middle.
+let card = CGRect(x: 292, y: 292, width: 440, height: 440)
+let cardPath = CGPath(roundedRect: card, cornerWidth: 70, cornerHeight: 70, transform: nil)
 ctx.saveGState()
-ctx.setShadow(offset: CGSize(width: 0, height: -18), blur: 36, color: NSColor.black.withAlphaComponent(0.4).cgColor)
-ctx.setFillColor(NSColor(srgbRed: 0.04, green: 0.04, blue: 0.05, alpha: 1).cgColor)
-ctx.addPath(p); ctx.fillPath()
+ctx.setShadow(offset: CGSize(width: 0, height: -12), blur: 24, color: NSColor.black.withAlphaComponent(0.35).cgColor)
+ctx.setFillColor(NSColor(white: 1, alpha: 0.96).cgColor)
+ctx.addPath(cardPath); ctx.fillPath()
 ctx.restoreGState()
+ctx.saveGState()
+ctx.addPath(cardPath); ctx.clip()
+ctx.setFillColor(NSColor(srgbRed: 0.12, green: 0.62, blue: 0.55, alpha: 1).cgColor)
+let hills = CGMutablePath()
+hills.move(to: CGPoint(x: card.minX, y: card.minY))
+hills.addLine(to: CGPoint(x: card.minX, y: card.minY + 130))
+hills.addQuadCurve(to: CGPoint(x: card.midX + 10, y: card.minY + 150), control: CGPoint(x: card.minX + 120, y: card.minY + 250))
+hills.addQuadCurve(to: CGPoint(x: card.maxX, y: card.minY + 110), control: CGPoint(x: card.midX + 150, y: card.minY + 60))
+hills.addLine(to: CGPoint(x: card.maxX, y: card.minY))
+hills.closeSubpath()
+ctx.addPath(hills); ctx.fillPath()
+ctx.setFillColor(NSColor(srgbRed: 1.0, green: 0.74, blue: 0.22, alpha: 1).cgColor)
+ctx.fillEllipse(in: CGRect(x: card.maxX - 160, y: card.maxY - 160, width: 84, height: 84))
 ctx.restoreGState()
 
-// Equalizer bars inside the island.
-let heights: [CGFloat] = [120, 210, 290, 180, 240, 110]
-let barW: CGFloat = 46, gap: CGFloat = 28
-let total = CGFloat(heights.count) * barW + CGFloat(heights.count - 1) * gap
-var x = 512 - total / 2
-let baseY: CGFloat = 520
-let colors = [NSColor(srgbRed: 1.00, green: 0.42, blue: 0.45, alpha: 1), NSColor(srgbRed: 1.00, green: 0.62, blue: 0.20, alpha: 1)]
-for (i, h) in heights.enumerated() {
-    let t = CGFloat(i) / CGFloat(heights.count - 1)
-    let c = NSColor(srgbRed: colors[0].redComponent + (colors[1].redComponent - colors[0].redComponent) * t,
-                    green: colors[0].greenComponent + (colors[1].greenComponent - colors[0].greenComponent) * t,
-                    blue: colors[0].blueComponent + (colors[1].blueComponent - colors[0].blueComponent) * t, alpha: 1)
-    ctx.setFillColor(c.cgColor)
-    ctx.addPath(CGPath(roundedRect: CGRect(x: x, y: baseY, width: barW, height: h), cornerWidth: barW / 2, cornerHeight: barW / 2, transform: nil))
-    ctx.fillPath()
-    x += barW + gap
+// Four arrows closing in on the card from the corners.
+func arrow(from a: CGPoint, to b: CGPoint) {
+    let dx = b.x - a.x, dy = b.y - a.y, len = hypot(dx, dy)
+    let ux = dx / len, uy = dy / len, nx = -uy, ny = ux
+    let head: CGFloat = 70, half: CGFloat = 46, width: CGFloat = 26
+    let neck = CGPoint(x: b.x - ux * head, y: b.y - uy * head)
+    let p = CGMutablePath()
+    p.move(to: CGPoint(x: a.x + nx * width / 2, y: a.y + ny * width / 2))
+    p.addLine(to: CGPoint(x: neck.x + nx * width / 2, y: neck.y + ny * width / 2))
+    p.addLine(to: CGPoint(x: neck.x + nx * half, y: neck.y + ny * half))
+    p.addLine(to: b)
+    p.addLine(to: CGPoint(x: neck.x - nx * half, y: neck.y - ny * half))
+    p.addLine(to: CGPoint(x: neck.x - nx * width / 2, y: neck.y - ny * width / 2))
+    p.addLine(to: CGPoint(x: a.x - nx * width / 2, y: a.y - ny * width / 2))
+    p.closeSubpath()
+    ctx.setFillColor(NSColor.white.withAlphaComponent(0.95).cgColor)
+    ctx.addPath(p); ctx.fillPath()
+}
+let c = CGPoint(x: 512, y: 512)
+for (sx, sy) in [(-1.0, 1.0), (1.0, 1.0), (-1.0, -1.0), (1.0, -1.0)] {
+    arrow(from: CGPoint(x: c.x + sx * 312, y: c.y + sy * 312), to: CGPoint(x: c.x + sx * 222, y: c.y + sy * 222))
 }
 NSGraphicsContext.restoreGraphicsState()
 
