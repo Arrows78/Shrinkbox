@@ -171,6 +171,18 @@ final class ClipboardWatcher {
         let front = NSWorkspace.shared.frontmostApplication?.bundleIdentifier ?? ""
         if Prefs.list("ignoredApps").contains(front) { return }
         let copiedBy = NSWorkspace.shared.frontmostApplication?.localizedName
+        if PhotosBridge.enabled, PhotosBridge.frontmostIsPhotos {
+            Task { @MainActor in
+                let originals = await PhotosBridge.exportSelection()
+                guard !originals.isEmpty else { return }
+                let steps = PhotosBridge.steps() + [Step.optimise(encoder: nil, compression: nil, adaptive: nil, dpi: nil, location: "temporary")]
+                let cards = ResultsModel.shared.enqueuePipelineItems(originals, pipeline: Pipeline(steps: steps), source: .clipboard, clipboard: true) { items in
+                    ClipboardWatcher.shared.write(items.compactMap { $0.outcome?.output }, image: nil)
+                }
+                for c in cards { c.fromPhotos = true }
+            }
+            return
+        }
         let types = pb.types ?? []
         // Files copied in the Finder.
         if let files = pb.readObjects(forClasses: [NSURL.self], options: [.urlReadingFileURLsOnly: true]) as? [URL], !files.isEmpty {

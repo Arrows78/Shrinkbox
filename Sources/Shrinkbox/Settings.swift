@@ -78,6 +78,11 @@ enum Prefs {
         }
         // Images
         add("imageCompression", "Compression", group: "Images", section: "Optimisation rules", .text, "custom:30", help: compressionHelp)
+        add("enablePhotosIntegration", "Optimise images copied from Photos", group: "Images", section: "Photos integration", .bool, "true", help: "Asks Photos for the original of the copied photos, instead of the small preview")
+        add("maxCopiedPhotosCount", "Photos to take at once", group: "Images", section: "Photos integration", .int(1...50), "5")
+        add("maxPhotosLength", "Downscale to a longest side of (0: no limit)", group: "Images", section: "Photos integration", .int(0...20_000), "0")
+        add("photoCropOrientation", "Photos crop orientation", group: "Images", section: "Photos integration", .choice(["adaptive", "landscape", "portrait"]), "adaptive", help: "Which way to crop images coming from Photos")
+        add("dismissResultOnUpload", "Dismiss a result once it is sent to a shelf app or Dropshare", group: "Floating Results", section: "Behaviour", .bool, "true")
         add("gifFrameDropBehaviour", "GIF frame dropping", group: "Images", section: "Optimisation rules", .choice(["playFaster", "keepDuration"]), "playFaster", help: "Compression above 80% drops every 4th, 3rd or 2nd frame of animated GIFs")
         add("copyImageFilePath", "Copy image paths", group: "Images", section: "File names", .bool, "true", help: "When copying optimised image data, also copy the file path")
         add("formatsToConvertToJPEG", "Convert to JPEG", group: "Images", section: "Compatibility", .multi(["webp", "avif", "heic", "jxl", "bmp", "tiff"]), "avif,bmp,heic,webp")

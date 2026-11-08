@@ -20,6 +20,7 @@ final class ResultItem: ObservableObject, Identifiable {
     let file: URL
     let kind: MediaKind
     var isClipboard = false
+    var fromPhotos = false
     var createdAt = Date()
     @Published var state: State = .waiting
     @Published var outcome: Outcome?
@@ -117,6 +118,37 @@ final class ResultsModel: ObservableObject {
         changed?()
     }
 
+    /// Like `enqueuePipeline`, for results that go to the clipboard: the cards are returned and `done` runs when all have finished.
+    @discardableResult
+    func enqueuePipelineItems(_ urls: [URL], pipeline: Pipeline, source: PipelineSource, clipboard: Bool, done: @escaping @MainActor ([ResultItem]) -> Void) -> [ResultItem] {
+        var created: [ResultItem] = []
+        for (i, url) in urls.enumerated() {
+            guard let kind = Media.kind(of: url) else { continue }
+            let item = ResultItem(file: url, kind: kind, source: source)
+            item.isClipboard = clipboard
+            items.append(item); created.append(item)
+            Thumbnails.make(for: url, kind: kind) { [weak item] image in item?.thumbnail = image }
+            item.task = Task { [weak self, weak item] in
+                guard let item else { return }
+                do {
+                    item.state = .running(0)
+                    var ctx = RunContext(source: source); ctx.counter = i + 1; ctx.forceTemporary = clipboard
+                    ctx.progress = { p in Task { @MainActor in if case .running = item.state { item.state = .running(p) } } }
+                    let o = try await Runner.run(url, pipeline, context: ctx)
+                    Protection.shared.mark(o.output)
+                    item.outcome = o
+                    item.state = .done
+                    Thumbnails.make(for: o.output, kind: kind) { [weak item] image in item?.thumbnail = image ?? item?.thumbnail }
+                } catch { item.state = .failed(error.localizedDescription) }
+                self?.scheduleHide(item)
+                self?.changed?()
+                if created.allSatisfy({ !$0.isBusy }) { done(created) }
+            }
+        }
+        changed?()
+        return created
+    }
+
     // MARK: Hiding
 
     func scheduleHide(_ item: ResultItem) {
@@ -208,7 +240,8 @@ final class ResultsModel: ObservableObject {
     func crop(_ item: ResultItem, spec: String, longEdge: Bool = false, smart: Bool? = nil) {
         guard item.kind == .image || item.kind == .video || item.kind == .pdf, CropSpec.parse(spec, longEdge: longEdge) != nil else { return }
         let loc = Library.placementText(Prefs.placement(optimised: item.kind))
-        rerun(item, steps: [.crop(spec: spec, longEdge: longEdge, smart: smart ?? (item.kind == .image), location: loc)], label: L("Cropping to %@", spec))
+        let oriented = item.fromPhotos ? PhotosBridge.orient(spec, as: Prefs.string("photoCropOrientation")) : spec
+        rerun(item, steps: [.crop(spec: oriented, longEdge: longEdge, smart: smart ?? (item.kind == .image), location: loc)], label: L("Cropping to %@", oriented))
     }
 
     /// Changes the playback speed of a video or an audio file, from the original: 1 gives the normal speed back.
@@ -290,6 +323,9 @@ final class ResultsModel: ObservableObject {
     func copy(_ item: ResultItem) { Clipboard.copy(item.current, format: item.kind == .image ? "imageData" : "path", relativeTo: nil) }
 
     func stop(_ item: ResultItem) { item.task?.cancel() }
+
+    /// A result handed to a shelf app or an uploader goes away when the setting says so.
+    func sentAway(_ item: ResultItem) { if Prefs.bool("dismissResultOnUpload") { dismiss(item) } }
 }
 
 /// Small previews of the files.

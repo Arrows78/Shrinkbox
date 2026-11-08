@@ -164,6 +164,10 @@ enum SelfTest {
         check("shortcuts: the new actions have unique defaults", Set(HotkeyAction.allCases.map { $0.defaultCombo.display }).count == HotkeyAction.allCases.count)
         check("settings: icon style is a choice", Prefs.set("menubarIconStyle", "box") == nil && Prefs.set("menubarIconStyle", "round") != nil)
         Prefs.reset("menubarIconStyle")
+        check("photos: 16:9 follows the orientation setting", PhotosBridge.orient("16:9", as: "portrait") == "9:16" && PhotosBridge.orient("9:16", as: "landscape") == "16:9" && PhotosBridge.orient("16:9", as: "landscape") == "16:9" && PhotosBridge.orient("1200x630", as: "portrait") == "1200x630")
+        check("photos: adaptive keeps a landscape ratio for a landscape photo and turns it for a portrait one", PhotosBridge.orient("4:3", as: "adaptive", size: (3000, 2000)) == "4:3" && PhotosBridge.orient("4:3", as: "adaptive", size: (2000, 3000)) == "3:4")
+        check("photos: the script asks for originals and the right count", PhotosBridge.script(folder: "/tmp/x", count: 3).contains("with using originals") && PhotosBridge.script(folder: "/tmp/x", count: 3).contains("n > 3"))
+        check("photos: a length limit becomes a crop step", { Prefs.set("maxPhotosLength", "1600"); defer { Prefs.reset("maxPhotosLength") }; return PhotosBridge.steps() == [.crop(spec: "1600", longEdge: true, smart: false, location: nil)] }() && PhotosBridge.steps().isEmpty)
         check("shortcuts: defaults are distinct and need a modifier", Set(HotkeyAction.allCases.map { $0.defaultCombo.display }).count == HotkeyAction.allCases.count && HotkeyAction.allCases.allSatisfy { $0.defaultCombo.modifiers != 0 })
         check("reference: the guide names every step", ["optimise", "downscale", "convert", "crop", "targetSize", "stripExif", "watermark", "changeSpeed", "normalize", "runScript", "fork"].allSatisfy { Reference.pipelineGuide.contains($0) })
     }

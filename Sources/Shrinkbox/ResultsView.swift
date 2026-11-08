@@ -380,9 +380,9 @@ struct ActionButton: View {
         case "saveAs": Button { model.saveAs(item) } label: { RoundIcon(symbol: "square.and.arrow.down", tip: L("Save as…")) }.buttonStyle(.plain)
         case "airDrop": Button { AirDrop.send([item.current]) } label: { RoundIcon(symbol: "airplayaudio", tip: L("Send with AirDrop")) }.buttonStyle(.plain)
         case "addToShelf":
-            if let app = ShelfApps.current { Button { ShelfApps.shelve([item.current]) } label: { RoundIcon(symbol: "tray.and.arrow.down", tip: L("Add to %@", app)) }.buttonStyle(.plain) }
+            if let app = ShelfApps.current { Button { ShelfApps.shelve([item.current]); model.sentAway(item) } label: { RoundIcon(symbol: "tray.and.arrow.down", tip: L("Add to %@", app)) }.buttonStyle(.plain) }
         case "uploadWithDropshare":
-            if ShelfApps.dropshare != nil { Button { ShelfApps.upload([item.current]) } label: { RoundIcon(symbol: "icloud.and.arrow.up", tip: L("Upload with Dropshare")) }.buttonStyle(.plain) }
+            if ShelfApps.dropshare != nil { Button { ShelfApps.upload([item.current]); model.sentAway(item) } label: { RoundIcon(symbol: "icloud.and.arrow.up", tip: L("Upload with Dropshare")) }.buttonStyle(.plain) }
         case "compare":
             if item.outcome?.backup != nil { Button { CompareWindow.show(item) } label: { RoundIcon(symbol: "square.split.2x1", tip: L("Compare before and after")) }.buttonStyle(.plain) }
         default:
@@ -411,8 +411,8 @@ struct ActionMenu: View {
         pipelinesMenu
         Divider()
         Button(L("Send with AirDrop")) { AirDrop.send([item.current]) }
-        if let app = ShelfApps.current { Button(L("Add to %@", app)) { ShelfApps.shelve([item.current]) } }
-        if ShelfApps.dropshare != nil { Button(L("Upload with Dropshare")) { ShelfApps.upload([item.current]) } }
+        if let app = ShelfApps.current { Button(L("Add to %@", app)) { ShelfApps.shelve([item.current]); model.sentAway(item) } }
+        if ShelfApps.dropshare != nil { Button(L("Upload with Dropshare")) { ShelfApps.upload([item.current]); model.sentAway(item) } }
         if item.outcome?.backup != nil { Button(L("Compare before and after")) { CompareWindow.show(item) } }
         Divider()
         Button(L("Show in Finder")) { model.showInFinder(item) }
