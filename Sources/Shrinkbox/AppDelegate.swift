@@ -40,7 +40,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         let a = CommandLine.arguments
         if let i = a.firstIndex(of: "--open-settings") {
             let pane = a.indices.contains(i + 1) ? SettingsPane(rawValue: a[i + 1]) : nil
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) { SettingsWindow.show(pane: pane ?? .general) }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) { SettingsWindow.show(pane: pane) }
         }
         if a.contains("--open-dropzone") { DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) { DropZone.state.showPresets = a.contains("--presets"); DropZone.show() } }
         if let i = a.firstIndex(of: "--optimise-demo"), a.indices.contains(i + 1) {

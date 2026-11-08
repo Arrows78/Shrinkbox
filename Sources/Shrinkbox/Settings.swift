@@ -37,16 +37,17 @@ enum Prefs {
             p.append(Pref(key: key, title: title, help: help, group: group, section: section, kind: kind, defaultValue: def))
         }
         // General
+        add("showMenubarIcon", "Show in the menu bar", group: "General", section: "Startup", .bool, "true", help: "When hidden, open Shrinkbox again from the Applications folder to reach its settings")
+        add("appearance", "Theme", group: "General", section: "Appearance", .choice(["system", "light", "dark"]), "system", help: "The look of this settings window")
+        add("menubarIconStyle", "Menu bar icon style", group: "General", section: "Appearance", .choice(["arrows", "box", "geometric"]), "arrows")
+        add("pauseAutomations", "Pause automatic optimisations", group: "General", section: "Optimisation", .bool, "false", help: "Folders and the clipboard are left alone until you resume")
         add("stripMetadata", "Strip EXIF metadata", group: "General", section: "Optimisation", .bool, "true", help: "Delete identifiable metadata such as the camera, the location and the date")
         add("preserveColorMetadata", "Preserve color profile metadata", group: "General", section: "Optimisation", .bool, "true", help: "Keep color profile tags when stripping metadata")
         add("preserveDates", "Preserve file creation and modification dates", group: "General", section: "Optimisation", .bool, "true", help: "The optimised file keeps the dates of the original")
         add("optimisedFileProtectionMs", "Re-optimisation loop detection window", group: "General", section: "Optimisation", .int(0...30_000), "3000", help: "In milliseconds. Increase it if files on iCloud Drive get optimised twice")
         add("workdir", "Working directory path", group: "General", section: "Working directory", .text, "", help: "Empty: ~/Library/Caches/Shrinkbox")
         add("workdirCleanupDays", "Delete working files older than", group: "General", section: "Working directory", .int(0...365), "7", help: "In days. 0 keeps everything")
-        add("menubarIconStyle", "Menu bar icon style", group: "General", section: "Appearance", .choice(["arrows", "box", "geometric"]), "arrows")
-        add("showMenubarIcon", "Menu bar icon", group: "General", section: "Appearance", .bool, "true")
-        add("pauseAutomations", "Pause automatic optimisations", group: "General", section: "Appearance", .bool, "false")
-        add("allowShrinkboxInScreenshots", "Show Shrinkbox in screenshots", group: "General", section: "Appearance", .bool, "false", help: "Otherwise its windows stay out of screenshots and screen sharing")
+        add("allowShrinkboxInScreenshots", "Show Shrinkbox in screenshots", group: "General", section: "Privacy", .bool, "false", help: "Otherwise its windows stay out of screenshots and screen sharing")
         // Clipboard
         add("enableClipboardOptimiser", "Enable clipboard optimiser", group: "Clipboard", section: "Clipboard", .bool, "true", help: "Watch copied data and optimise it automatically")
         add("optimiseTIFF", "TIFF data", group: "Clipboard", section: "Clipboard", .bool, "true", help: "Often from design apps, sometimes better left alone")
@@ -173,6 +174,7 @@ enum Prefs {
     static func use(_ defaults: UserDefaults) { store = defaults }
 
     static func string(_ key: String) -> String {
+        if let pref = byKey[key], case .bool = pref.kind, store.object(forKey: key) != nil { return bool(key) ? "true" : "false" }
         if let v = store.object(forKey: key) { return v as? String ?? "\(v)" }
         return byKey[key]?.defaultValue ?? ""
     }
@@ -220,6 +222,9 @@ enum Prefs {
 
     static func reset(_ key: String) { store.removeObject(forKey: key); NotificationCenter.default.post(name: .settingsChanged, object: key) }
     static func resetAll() { for p in all { store.removeObject(forKey: p.key) }; NotificationCenter.default.post(name: .settingsChanged, object: nil) }
+
+    /// Whether a value was ever stored for the setting, as opposed to its default applying.
+    static func isSet(_ key: String) -> Bool { store.object(forKey: key) != nil }
 
     /// A readable dump of every setting, grouped, for the `settings schema` command.
     static func schema() -> String {

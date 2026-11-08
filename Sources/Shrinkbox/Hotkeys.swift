@@ -121,6 +121,7 @@ struct ShortcutField: View {
             }
         }
         .onAppear { combo = action.combo }
+        .onReceive(NotificationCenter.default.publisher(for: .hotkeysChanged)) { _ in combo = action.combo }
         .onDisappear { stop() }
     }
 
@@ -132,6 +133,8 @@ struct ShortcutField: View {
             case 51, 117: action.combo = nil; combo = nil
             default:
                 guard let c = KeyCombo(event: e) else { NSSound.beep(); return nil }
+                // Two actions on the same keys would leave one of them dead: macOS registers only the first.
+                if HotkeyAction.allCases.contains(where: { $0 != action && $0.combo == c }) { NSSound.beep(); return nil }
                 action.combo = c; combo = c
             }
             stop()

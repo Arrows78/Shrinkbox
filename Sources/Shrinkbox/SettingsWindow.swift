@@ -9,12 +9,11 @@ struct SettingsView: View {
     var body: some View {
         HStack(spacing: 0) {
             SettingsSidebar(pane: $pane)
-            Divider().overlay(Color.white.opacity(0.08))
+            Divider().overlay(Color.primary.opacity(0.08))
             page.frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .frame(width: 800, height: 600)
-        .background(Color(nsColor: SettingsStyle.window))
-        .preferredColorScheme(.dark)
+        .background(Color(nsColor: SettingsStyle.adaptiveWindow))
     }
 
     @ViewBuilder private var page: some View {
@@ -23,6 +22,7 @@ struct SettingsView: View {
         case .shortcuts: ShortcutsPane()
         case .agents: AgentsPane()
         case .tools: ToolsPane()
+        case .permissions: PermissionsPane()
         case .about: AboutPane()
         default: PrefGroupPage(pane: pane)
         }
@@ -278,11 +278,12 @@ private struct PresetZonesCard: View {
 struct ShortcutsPane: View {
     var body: some View {
         SettingsPage(pane: .shortcuts) {
-            SettingsCard {
+            SettingsCard(title: "Global shortcuts") {
                 ForEach(HotkeyAction.allCases) { a in
                     SettingsRow(title: LocalizedStringKey(a.title)) { ShortcutField(action: a) }
                 }
             }
+            SettingsNote("Click a shortcut, then press the new keys. Delete clears it, Esc cancels. They work in every app.")
             SettingsCard(title: "Keys of the floating results") {
                 PrefRow(pref: Prefs.byKey["triggerKeys"]!)
                 ForEach(ResultKeys.Key.allCases) { k in SettingsRow(title: LocalizedStringKey(k.title)) { Keycaps(ResultKeys.trigger.label + k.letter) } }
@@ -357,32 +358,56 @@ struct ToolsPane: View {
 // MARK: About
 
 struct AboutPane: View {
-    private var version: String { AppBundle.version }
+    @State private var checking = false
+    @State private var copied = false
 
     var body: some View {
         SettingsPage(pane: .about) {
-            HStack(spacing: 14) {
+            HStack(spacing: 16) {
                 Image(nsImage: NSApp.applicationIconImage).resizable().frame(width: 64, height: 64)
                 VStack(alignment: .leading, spacing: 3) {
-                    Text(verbatim: "Shrinkbox").font(.system(size: 18, weight: .bold))
-                    Text(verbatim: L("Version %@", version)).font(.system(size: 12)).foregroundStyle(SettingsStyle.dim)
+                    Text(verbatim: "Shrinkbox").font(.system(size: 22, weight: .bold))
+                    Text(verbatim: L("Version %@", AppBundle.version)).font(.system(size: 12)).foregroundStyle(SettingsStyle.dim)
+                    Text("Make images, videos, audio files and PDFs smaller. Everything stays on your Mac.").font(.system(size: 12)).foregroundStyle(Color.primary.opacity(0.6))
                 }
             }
             SettingsCard(title: "What leaves your Mac") {
-                SettingsRow(title: "Nothing", subtitle: "Files are processed on your Mac. The only network use is downloading a link you drop on the drop zone.") { EmptyView() }
+                SettingsRow(title: "Nothing", subtitle: "Files are processed on your Mac. The only network use is downloading a link you drop on the drop zone, and asking GitHub for the latest release when you click “Check for updates…”.") { EmptyView() }
             }
             SettingsCard {
                 SettingsRow(title: "Source code and releases") {
-                    Button("Open on GitHub") { NSWorkspace.shared.open(URL(string: "https://github.com/Arrows78/Shrinkbox")!) }.controlSize(.small)
+                    HStack {
+                        Button("GitHub") { open("https://github.com/Arrows78/Shrinkbox") }.controlSize(.small)
+                        Button("Releases") { open(UpdateCheck.releasesPage) }.controlSize(.small)
+                    }
+                }
+                SettingsRow(title: "Updates", subtitle: "Asks GitHub for the latest release when you click. Shrinkbox never checks by itself.") {
+                    Button("Check for updates…") { check() }.controlSize(.small).disabled(checking)
+                }
+                SettingsRow(title: "Diagnostics", subtitle: "Copies the version, macOS, the tools found and the permissions, to paste into a bug report. It contains no personal data.") {
+                    Button(copied ? LocalizedStringKey("Copied") : "Copy diagnostics") { copy() }.controlSize(.small)
+                }
+                SettingsRow(title: "Report a problem", subtitle: "Opens a prefilled GitHub issue with the diagnostics. Review it before sending.") {
+                    Button("Report…") { ProblemReport.open() }.controlSize(.small)
                 }
                 SettingsRow(title: "Log", subtitle: "What Shrinkbox did, one line per file.") {
                     Button("Show in Finder") { NSWorkspace.shared.activateFileViewerSelecting([Log.url]) }.controlSize(.small)
                 }
-                SettingsRow(title: "Restore default settings") {
-                    Button("Restore") { Prefs.resetAll() }.controlSize(.small)
-                }
             }
         }
+    }
+
+    private func open(_ s: String) { if let u = URL(string: s) { NSWorkspace.shared.open(u) } }
+
+    private func check() {
+        checking = true
+        Task { await UpdateCheck.run(); checking = false }
+    }
+
+    private func copy() {
+        NSPasteboard.general.clearContents(); NSPasteboard.general.setString(Diagnostics.text, forType: .string)
+        copied = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { copied = false }
     }
 }
 
@@ -404,21 +429,37 @@ struct CopyButton: View {
 @MainActor
 enum SettingsWindow {
     private static var window: NSWindow?
-    static func show(pane: SettingsPane = .general) {
+    /// Opens the settings; with a pane, on that pane (also when the window is already open).
+    static func show(pane: SettingsPane? = nil) {
+        if let window, let pane {
+            let host = NSHostingController(rootView: SettingsView(pane: pane))
+            host.sizingOptions = []
+            window.contentViewController = host
+            window.setContentSize(NSSize(width: 800, height: 632))
+        }
+        let created = window == nil
         if window == nil {
-            let w = NSWindow(contentViewController: NSHostingController(rootView: SettingsView(pane: pane)))
+            let host = NSHostingController(rootView: SettingsView(pane: pane ?? .general))
+            host.sizingOptions = []   // the size is set below: otherwise it depends on when the window is first laid out
+            let w = NSWindow(contentViewController: host)
+            w.setContentSize(NSSize(width: 800, height: 632))   // the 600 points of the view, under the transparent title bar
             w.title = "Shrinkbox Settings"
             w.styleMask = [.titled, .closable, .fullSizeContentView]
             w.titlebarAppearsTransparent = true
             w.titleVisibility = .hidden
-            w.appearance = NSAppearance(named: .darkAqua)
-            w.backgroundColor = SettingsStyle.window
+            w.appearance = Theme.appearance
+            w.backgroundColor = SettingsStyle.adaptiveWindow
             w.isMovableByWindowBackground = true
             w.isReleasedWhenClosed = false
             window = w
+            NotificationCenter.default.addObserver(forName: .settingsChanged, object: nil, queue: .main) { n in
+                guard n.object == nil || (n.object as? String) == "appearance" else { return }
+                MainActor.assumeIsolated { window?.appearance = Theme.appearance }
+            }
         }
         NSApp.activate(ignoringOtherApps: true)
-        window?.center(); window?.makeKeyAndOrderFront(nil)
+        if created { window?.center() }
+        window?.makeKeyAndOrderFront(nil)
     }
 }
 
@@ -431,7 +472,7 @@ struct Keycaps: View {
         HStack(spacing: 3) {
             ForEach(Array(keys.enumerated()), id: \.offset) { _, k in
                 Text(String(k)).font(.system(size: 12, weight: .medium, design: .rounded)).frame(minWidth: 22, minHeight: 22)
-                    .background(Color.white.opacity(0.1), in: RoundedRectangle(cornerRadius: 5))
+                    .background(Color.primary.opacity(0.1), in: RoundedRectangle(cornerRadius: 5))
             }
         }
     }

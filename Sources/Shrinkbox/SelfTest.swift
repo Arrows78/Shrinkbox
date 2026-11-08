@@ -57,6 +57,19 @@ enum SelfTest {
         return (p[kCGImagePropertyPixelWidth] as? Int ?? 0, p[kCGImagePropertyPixelHeight] as? Int ?? 0)
     }
 
+    /// The settings backup and the update check, which touch no file and no network.
+    static func settingsChecks() {
+        Prefs.set("stripMetadata", "false"); Prefs.set("mcpAllowScriptSteps", "true")
+        let exported = SettingsBackup.export().flatMap { try? JSONSerialization.jsonObject(with: $0) as? [String: Any] }
+        let settings = exported?["settings"] as? [String: String]
+        check("backup: only the settings that differ from the default are exported", settings?["stripMetadata"] == "false" && settings?["preserveDates"] == nil, "\(String(describing: settings))")
+        check("backup: the script steps switch is never exported", settings?["mcpAllowScriptSteps"] == nil)
+        check("backup: a file that is not a backup is refused", SettingsBackup.restore(Data("{}".utf8)) == nil && SettingsBackup.restore(Data("nope".utf8)) == nil)
+        Prefs.reset("mcpAllowScriptSteps"); Prefs.reset("stripMetadata")
+        check("update check: versions compare by number", UpdateCheck.isNewer("v0.10.0", than: "0.9.1") && !UpdateCheck.isNewer("0.2.0", than: "v0.2") && !UpdateCheck.isNewer("0.1.9", than: "0.2.0") && UpdateCheck.isNewer("1.0", than: "0.9.9"))
+        check("settings: every setting of the catalogue has a unique key", Set(Prefs.all.map(\.key)).count == Prefs.all.count)
+    }
+
     static func run() -> Int32 {
         let dir = FileManager.default.temporaryDirectory.appendingPathComponent("shrinkbox-selftest-\(UUID().uuidString)", isDirectory: true)
         try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
@@ -64,6 +77,7 @@ enum SelfTest {
         setenv("SHRINKBOX_LIBRARY", dir.appendingPathComponent("library.json").path, 1)
         defer { try? FileManager.default.removeItem(at: dir) }
         Prefs.use(UserDefaults(suiteName: "dev.labs.shrinkbox.selftest.\(UUID().uuidString)")!)
+        settingsChecks()
 
         var finished = false
         Task {
