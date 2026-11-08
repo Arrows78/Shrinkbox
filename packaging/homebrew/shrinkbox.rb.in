@@ -4,7 +4,7 @@ cask "shrinkbox" do
 
   url "@BASE_URL@/v#{version}/Shrinkbox-#{version}.zip"
   name "Shrinkbox"
-  desc "Notch island with music, timers, clipboard, files and system alerts"
+  desc "Image, video, audio and PDF optimiser with a drop zone, folder watching and a command line"
   homepage "https://github.com/Arrows78/Shrinkbox"
 
   livecheck do
@@ -15,6 +15,7 @@ cask "shrinkbox" do
   depends_on macos: :sonoma
 
   app "Shrinkbox.app"
+  binary "#{appdir}/Shrinkbox.app/Contents/MacOS/Shrinkbox", target: "shrinkbox"
 
   # Your own files are never removed.
   zap trash: [

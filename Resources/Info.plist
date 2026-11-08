@@ -98,7 +98,5 @@
 	<string>Shrinkbox optimises the files that appear in the folders you ask it to watch.</string>
 	<key>NSAppleEventsUsageDescription</key>
 	<string>Shrinkbox asks the Finder which files are selected when you use the shortcut for it.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Shrinkbox needs access to your Photos library to retrieve full-resolution images copied from Photos.</string>
 </dict>
 </plist>
