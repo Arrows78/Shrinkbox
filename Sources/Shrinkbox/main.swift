@@ -9,5 +9,9 @@ MainActor.assumeIsolated {
         while done.wait(timeout: .now() + 0.01) == .timedOut { RunLoop.current.run(until: Date().addingTimeInterval(0.01)) }
         exit(code)
     }
-    print("Shrinkbox \(CLI.version)")
+    let app = NSApplication.shared
+    let delegate = AppDelegate()
+    app.delegate = delegate
+    app.setActivationPolicy(.accessory)
+    app.run()
 }
