@@ -27,6 +27,7 @@ from the commit messages (Conventional Commits) and the `v*` tags: do not edit i
 - **cli**: Find the app and its settings when run through a symlink
 - **results**: Say so when a conversion makes a file bigger
 - **build**: Keep macOS privacy permissions across updates
+- **pipelines**: Read the path a script prints from any line of its output
 
 ## [0.1.0] - 2026-11-08
 
