@@ -24,7 +24,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>0.1.0</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>2</string>
 	<key>CFBundleIconFile</key>
 	<string>AppIcon</string>
 	<key>LSMinimumSystemVersion</key>
@@ -67,25 +67,39 @@
 	<array>
 		<dict>
 			<key>NSMenuItem</key>
-			<dict><key>default</key><string>Optimise with Shrinkbox</string></dict>
+			<dict>
+				<key>default</key>
+				<string>Optimise with Shrinkbox</string>
+			</dict>
 			<key>NSMessage</key>
 			<string>optimisationService</string>
 			<key>NSPortName</key>
 			<string>Shrinkbox</string>
 			<key>NSSendFileTypes</key>
-			<array><string>public.image</string><string>public.movie</string><string>public.audio</string><string>com.adobe.pdf</string></array>
+			<array>
+				<string>public.image</string>
+				<string>public.movie</string>
+				<string>public.audio</string>
+				<string>com.adobe.pdf</string>
+			</array>
 			<key>NSRequiredContext</key>
 			<dict/>
 		</dict>
 		<dict>
 			<key>NSMenuItem</key>
-			<dict><key>default</key><string>Strip EXIF Metadata</string></dict>
+			<dict>
+				<key>default</key>
+				<string>Strip EXIF Metadata</string>
+			</dict>
 			<key>NSMessage</key>
 			<string>stripEXIFService</string>
 			<key>NSPortName</key>
 			<string>Shrinkbox</string>
 			<key>NSSendFileTypes</key>
-			<array><string>public.image</string><string>public.movie</string></array>
+			<array>
+				<string>public.image</string>
+				<string>public.movie</string>
+			</array>
 			<key>NSRequiredContext</key>
 			<dict/>
 		</dict>
