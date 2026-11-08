@@ -425,3 +425,57 @@ These keys only work while results are on screen. They act on the result under t
 Trigger keys	Teclas de activación	Auslösetasten
 Optimisation paused	Optimización en pausa	Optimierung pausiert
 Optimisation resumed	Optimización reanudada	Optimierung fortgesetzt
+%d files · %@	%d archivos · %@	%d Dateien · %@
+16:9, 1200x630, 1920	16:9, 1200x630, 1920	16:9, 1200x630, 1920
+Adjust what the files get, or start with the defaults. Originals are backed up first and can be restored.	Ajusta lo que reciben los archivos, o empieza con los valores predeterminados. Los originales se guardan antes y se pueden restaurar.	Passe an, was die Dateien erhalten, oder starte mit den Standardwerten. Originale werden zuerst gesichert und lassen sich wiederherstellen.
+Adjustments	Ajustes	Anpassungen
+Choose the compression	Elegir la compresión	Komprimierung wählen
+Install the command	Instalar el comando	Befehl installieren
+Installation failed	Falló la instalación	Installation fehlgeschlagen
+Installed at %@	Instalado en %@	Installiert unter %@
+Keep the format	Mantener el formato	Format beibehalten
+Not installed. Homebrew installs it by itself.	No instalado. Homebrew lo instala solo.	Nicht installiert. Homebrew installiert ihn selbst.
+Off: files are optimised without a card	Desactivado: los archivos se optimizan sin tarjeta	Aus: Dateien werden ohne Karte optimiert
+Opens the batch window with adjustments for you to confirm, instead of starting at once	Abre la ventana del lote con ajustes para confirmar, en vez de empezar al instante	Öffnet das Stapelfenster mit Anpassungen zur Bestätigung, statt sofort zu starten
+Optimise %d files	Optimizar %d archivos	%d Dateien optimieren
+Remove from batch	Quitar del lote	Aus dem Stapel entfernen
+Remove the audio	Quitar el audio	Audio entfernen
+Restore the defaults	Restaurar los valores predeterminados	Standardwerte wiederherstellen
+Review batches before they start	Revisar los lotes antes de empezar	Stapel vor dem Start prüfen
+Show floating results for watched folders	Mostrar resultados flotantes para las carpetas vigiladas	Schwebende Ergebnisse für überwachte Ordner anzeigen
+Show images in compact results	Mostrar imágenes en los resultados compactos	Bilder in kompakten Ergebnissen anzeigen
+The shrinkbox command	El comando shrinkbox	Der Befehl shrinkbox
+Unchanged	Sin cambios	Unverändert
+Add	Añadir	Hinzufügen
+Add a step	Añadir un paso	Schritt hinzufügen
+Add an automation	Añadir una automatización	Automatisierung hinzufügen
+Add the zone	Añadir la zona	Zone hinzufügen
+Attach a pipeline to a folder, the clipboard or the drop zone below, or with “shrinkbox pipeline attach”.	Asocia un pipeline a una carpeta, al portapapeles o a la zona de soltado abajo, o con «shrinkbox pipeline attach».	Verknüpfe unten eine Pipeline mit einem Ordner, der Zwischenablage oder der Ablagezone, oder mit „shrinkbox pipeline attach“.
+Choose…	Elegir…	Auswählen…
+Folder…	Carpeta…	Ordner…
+Icon	Icono	Symbol
+Move this pipeline to another file type	Mover este pipeline a otro tipo de archivo	Diese Pipeline zu einem anderen Dateityp verschieben
+Pipeline	Pipeline	Pipeline
+Remove from zone	Quitar de la zona	Aus der Zone entfernen
+Remove this folder from automation	Quitar esta carpeta de la automatización	Diesen Ordner aus der Automatisierung entfernen
+Runs	Ejecuta	Führt aus
+Skip the optimisation	Omitir la optimización	Optimierung überspringen
+Edit the pipeline	Editar el pipeline	Pipeline bearbeiten
+Update the pipeline	Actualizar el pipeline	Pipeline aktualisieren
+Otherwise files are optimised first, then the steps run.	Si no, los archivos se optimizan primero y luego se ejecutan los pasos.	Sonst werden die Dateien zuerst optimiert, dann laufen die Schritte.
+Optimise, aggressively	Optimizar, de forma agresiva	Aggressiv optimieren
+Downscale to half	Reducir a la mitad	Auf die Hälfte verkleinern
+Crop to a long edge of 1600	Recortar a un lado largo de 1600	Auf eine lange Kante von 1600 zuschneiden
+Crop to 16:9	Recortar a 16:9	Auf 16:9 zuschneiden
+Convert to GIF	Convertir a GIF	In GIF umwandeln
+Fit under 10 MB	Ajustar por debajo de 10 MB	Unter 10 MB halten
+Strip metadata	Eliminar los metadatos	Metadaten entfernen
+Double the speed	Duplicar la velocidad	Geschwindigkeit verdoppeln
+Only if the name matches	Solo si el nombre coincide	Nur wenn der Name passt
+Only for some formats	Solo para algunos formatos	Nur für bestimmte Formate
+Move to a folder	Mover a una carpeta	In einen Ordner verschieben
+Copy to a folder	Copiar a una carpeta	In einen Ordner kopieren
+Rename	Renombrar	Umbenennen
+Copy the path to the clipboard	Copiar la ruta al portapapeles	Pfad in die Zwischenablage kopieren
+Keep a second card	Conservar una segunda tarjeta	Zweite Karte behalten
+Run a Shortcut	Ejecutar un atajo	Kurzbefehl ausführen
