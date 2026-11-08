@@ -31,7 +31,7 @@ struct Args {
 }
 
 enum CLI {
-    static let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "dev"
+    static var version: String { AppBundle.version }
 
     static let commands: Set<String> = ["optimise", "optimize", "crop", "downscale", "convert", "crop-pdf", "uncrop-pdf", "strip-exif", "clear", "pipeline", "settings", "mcp", "logs", "help", "--help", "-h", "version", "--version"]
 
@@ -64,6 +64,7 @@ enum CLI {
     """
 
     static func run(_ argv: [String]) async -> Int32 {
+        AppBundle.shareSettingsWithApp()
         let rest = Array(argv.dropFirst(2))
         switch argv[1] {
         case "help", "--help", "-h": print(usage); return 0
@@ -161,7 +162,7 @@ enum CLI {
                 if !json {
                     let note = o.notes.isEmpty ? "" : "  (\(o.notes.joined(separator: ", ")))"
                     if o.skipped && !o.changed { print("\(file.lastPathComponent): \(Files.human(o.originalSize)), unchanged\(note)") }
-                    else { print("\(o.output.lastPathComponent): \(Files.human(o.originalSize)) → \(Files.human(o.newSize)) (-\(o.percent)%)\(note)") }
+                    else { print("\(o.output.lastPathComponent): \(Files.human(o.originalSize)) → \(Files.human(o.newSize)) (\(o.changeLabel))\(note)") }
                 }
             } else {
                 failed += 1

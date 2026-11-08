@@ -237,6 +237,34 @@ enum NameTemplate {
     }
 }
 
+/// The app bundle the running executable belongs to. Through a symlink (the `shrinkbox` command of Homebrew) macOS
+/// does not find it, so the version and the settings domain would be those of a bare tool.
+enum AppBundle {
+    /// The `.app` that contains `executable`, following symlinks.
+    static func locate(executable: URL) -> URL? {
+        var url = executable.resolvingSymlinksInPath()
+        for _ in 0..<5 {
+            url.deleteLastPathComponent()
+            if url.pathExtension == "app" { return url }
+        }
+        return nil
+    }
+
+    static var info: [String: Any]? {
+        if let i = Bundle.main.infoDictionary, i["CFBundleIdentifier"] != nil { return i }
+        let exe = Bundle.main.executableURL ?? URL(fileURLWithPath: CommandLine.arguments[0])
+        return locate(executable: exe).flatMap { Bundle(url: $0)?.infoDictionary }
+    }
+
+    static var version: String { info?["CFBundleShortVersionString"] as? String ?? "dev" }
+    static var identifier: String { info?["CFBundleIdentifier"] as? String ?? "dev.labs.shrinkbox" }
+
+    /// Makes a command run through a symlink read and write the settings of the app.
+    static func shareSettingsWithApp() {
+        if Bundle.main.bundleIdentifier == nil, let d = UserDefaults(suiteName: identifier) { Prefs.use(d) }
+    }
+}
+
 extension String {
     /// `~` expanded, keeping a trailing slash: it is what says "this is a folder".
     var expandingTilde: String {

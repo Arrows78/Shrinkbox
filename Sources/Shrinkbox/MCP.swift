@@ -48,7 +48,7 @@ enum MCPServer {
                 var ctx = RunContext(source: .cli); ctx.counter = i + 1
                 do {
                     let o = try await Runner.run(f, pipeline, context: ctx)
-                    lines.append("\(o.output.path): \(Files.human(o.originalSize)) → \(Files.human(o.newSize)) (-\(o.percent)%)" + (o.notes.isEmpty ? "" : " [\(o.notes.joined(separator: ", "))]"))
+                    lines.append("\(o.output.path): \(Files.human(o.originalSize)) → \(Files.human(o.newSize)) (\(o.changeLabel))" + (o.notes.isEmpty ? "" : " [\(o.notes.joined(separator: ", "))]"))
                 } catch { ok = false; lines.append("\(f.path): \(error.localizedDescription)") }
             }
             return (ok, lines.joined(separator: "\n"))
@@ -137,6 +137,7 @@ enum MCPServer {
 
     /// Reads requests on stdin until it closes. Nothing else may ever be written to stdout.
     static func run() {
+        AppBundle.shareSettingsWithApp()
         while let line = readLine(strippingNewline: true) {
             guard !line.isEmpty, let obj = (try? JSONSerialization.jsonObject(with: Data(line.utf8))) as? [String: Any] else { continue }
             let resp = handle(obj) { request in

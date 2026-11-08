@@ -177,7 +177,7 @@ struct ToolsPane: View {
 // MARK: About
 
 struct AboutPane: View {
-    private var version: String { Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "" }
+    private var version: String { AppBundle.version }
 
     var body: some View {
         SettingsPage(pane: .about) {
