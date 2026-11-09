@@ -154,11 +154,10 @@ final class ClipboardWatcher {
     func start() { timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { _ in MainActor.assumeIsolated { ClipboardWatcher.shared.tick() } } }
 
     /// Puts files on the clipboard without Shrinkbox looking at them again.
-    func write(_ urls: [URL], image: NSImage?) {
+    func write(_ urls: [URL], image: Bool = false) {
         let pb = NSPasteboard.general
         pb.clearContents()
-        if let image, urls.count == 1 { pb.writeObjects([image]) }
-        pb.writeObjects(urls as [NSURL])
+        if image, urls.count == 1 { pb.writeObjects([Clipboard.imageItem(urls[0])]) } else { pb.writeObjects(urls as [NSURL]) }
         ownChange = pb.changeCount; lastChange = pb.changeCount
     }
 
@@ -177,7 +176,7 @@ final class ClipboardWatcher {
                 guard !originals.isEmpty else { return }
                 let steps = PhotosBridge.steps() + [Step.optimise(encoder: nil, compression: nil, adaptive: nil, dpi: nil, location: "temporary")]
                 let cards = ResultsModel.shared.enqueuePipelineItems(originals, pipeline: Pipeline(steps: steps), source: .clipboard, clipboard: true) { items in
-                    ClipboardWatcher.shared.write(items.compactMap { $0.outcome?.output }, image: nil)
+                    ClipboardWatcher.shared.write(items.compactMap { $0.outcome?.output })
                 }
                 for c in cards { c.fromPhotos = true }
             }
@@ -198,7 +197,7 @@ final class ClipboardWatcher {
             if !allowed.isEmpty {
                 ResultsModel.shared.enqueue(allowed, source: .clipboard, copiedBy: copiedBy, forceTemporary: true, clipboard: true) { _, _ in
                     let outs = ResultsModel.shared.items.filter { $0.isClipboard }.compactMap { $0.outcome?.output }
-                    ClipboardWatcher.shared.write(outs, image: nil)
+                    ClipboardWatcher.shared.write(outs)
                 }
             }
             return
@@ -220,8 +219,7 @@ final class ClipboardWatcher {
             guard let self else { return }
             if accumulate { self.accumulated.append(outcome.output) } else { self.accumulated = [outcome.output] }
             self.lastAccumulation = Date()
-            let img = NSImage(contentsOf: outcome.output)
-            self.write(Prefs.bool("accumulateClipboardImages") ? self.accumulated : [outcome.output], image: Prefs.bool("accumulateClipboardImages") && self.accumulated.count > 1 ? nil : img)
+            self.write(Prefs.bool("accumulateClipboardImages") ? self.accumulated : [outcome.output], image: true)
             if Prefs.bool("copyImageFilePath"), self.accumulated.count == 1 { NSPasteboard.general.setString(outcome.output.path, forType: .string); self.ownChange = NSPasteboard.general.changeCount; self.lastChange = self.ownChange }
         }
     }

@@ -175,7 +175,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
                 ResultsModel.shared.enqueuePipeline(urls, pipeline: Pipeline(steps: steps), source: .manual, copyWhenDone: Prefs.bool("autoCopyToClipboard"))
             } else {
                 ResultsModel.shared.enqueue(urls, source: .manual, forceTemporary: true, clipboard: true) { _, _ in
-                    ClipboardWatcher.shared.write(ResultsModel.shared.items.filter { $0.isClipboard }.compactMap { $0.outcome?.output }, image: nil) }
+                    ClipboardWatcher.shared.write(ResultsModel.shared.items.filter { $0.isClipboard }.compactMap { $0.outcome?.output }) }
             }
         }
         if let files = pb.readObjects(forClasses: [NSURL.self], options: [.urlReadingFileURLsOnly: true]) as? [URL], !files.isEmpty {

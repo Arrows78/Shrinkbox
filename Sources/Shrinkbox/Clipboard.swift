@@ -1,4 +1,5 @@
 import AppKit
+import UniformTypeIdentifiers
 
 /// Reads and writes what the clipboard holds: image data, file lists, text.
 @MainActor
@@ -14,7 +15,7 @@ enum Clipboard {
         }
         switch format {
         case "imageData":
-            if let image = NSImage(contentsOf: url) { pb.writeObjects([image]); pb.writeObjects([url as NSURL]) } else { pb.writeObjects([url as NSURL]) }
+            pb.writeObjects([imageItem(url)])
         case "markdown":
             let encoded = path.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? path
             pb.setString("![\(url.deletingPathExtension().lastPathComponent)](\(encoded))", forType: .string)
@@ -22,6 +23,18 @@ enum Clipboard {
             pb.writeObjects([url as NSURL])
             pb.setString(url.path, forType: .string)
         }
+    }
+
+    /// One pasteboard item holding the file and its optimised bytes, so the clipboard keeps a single entry
+    /// and pastes the compressed data rather than a TIFF re-encoding.
+    static func imageItem(_ url: URL) -> NSPasteboardItem {
+        let item = NSPasteboardItem()
+        item.setString(url.absoluteString, forType: .fileURL)
+        guard let data = try? Data(contentsOf: url), let type = UTType(filenameExtension: url.pathExtension) else { return item }
+        item.setData(data, forType: NSPasteboard.PasteboardType(type.identifier))
+        // Apps that cannot read WebP, AVIF or HEIC still get something to paste.
+        if !type.conforms(to: .png), !type.conforms(to: .jpeg), let tiff = NSImage(data: data)?.tiffRepresentation { item.setData(tiff, forType: .tiff) }
+        return item
     }
 
     static func copy(_ urls: [URL]) {
