@@ -4,6 +4,12 @@ All notable changes to Shrinkbox are listed here, newest first. The file is gene
 from the commit messages (Conventional Commits) and the `v*` tags: do not edit it by hand. See
 `docs/RELEASING.md`. Versions follow [Semantic Versioning](https://semver.org).
 
+## [0.3.1] - 2026-11-09
+
+### Fixed
+
+- **clipboard**: Copy a compressed image as a single clipboard entry
+
 ## [0.3.0] - 2026-11-08
 
 ### Added
@@ -46,6 +52,7 @@ from the commit messages (Conventional Commits) and the `v*` tags: do not edit i
 
 - Initial release.
 
+[0.3.1]: https://github.com/Arrows78/Shrinkbox/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/Arrows78/Shrinkbox/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/Arrows78/Shrinkbox/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/Arrows78/Shrinkbox/releases/tag/v0.1.0
