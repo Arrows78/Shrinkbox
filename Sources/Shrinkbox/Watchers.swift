@@ -154,10 +154,10 @@ final class ClipboardWatcher {
     func start() { timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { _ in MainActor.assumeIsolated { ClipboardWatcher.shared.tick() } } }
 
     /// Puts files on the clipboard without Shrinkbox looking at them again.
-    func write(_ urls: [URL], image: Bool = false) {
+    func write(_ urls: [URL], image: Bool = false, path: Bool = false) {
         let pb = NSPasteboard.general
         pb.clearContents()
-        if image, urls.count == 1 { pb.writeObjects([Clipboard.imageItem(urls[0])]) } else { pb.writeObjects(urls as [NSURL]) }
+        if image, urls.count == 1 { pb.writeObjects([Clipboard.imageItem(urls[0], path: path)]) } else { pb.writeObjects(urls as [NSURL]) }
         ownChange = pb.changeCount; lastChange = pb.changeCount
     }
 
@@ -219,8 +219,7 @@ final class ClipboardWatcher {
             guard let self else { return }
             if accumulate { self.accumulated.append(outcome.output) } else { self.accumulated = [outcome.output] }
             self.lastAccumulation = Date()
-            self.write(Prefs.bool("accumulateClipboardImages") ? self.accumulated : [outcome.output], image: true)
-            if Prefs.bool("copyImageFilePath"), self.accumulated.count == 1 { NSPasteboard.general.setString(outcome.output.path, forType: .string); self.ownChange = NSPasteboard.general.changeCount; self.lastChange = self.ownChange }
+            self.write(Prefs.bool("accumulateClipboardImages") ? self.accumulated : [outcome.output], image: true, path: Prefs.bool("copyImageFilePath"))
         }
     }
 }

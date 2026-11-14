@@ -25,11 +25,12 @@ enum Clipboard {
         }
     }
 
-    /// One pasteboard item holding the file and its optimised bytes, so the clipboard keeps a single entry
-    /// and pastes the compressed data rather than a TIFF re-encoding.
-    static func imageItem(_ url: URL) -> NSPasteboardItem {
+    /// One pasteboard item holding the file, its optimised bytes and optionally its path, so the clipboard keeps a
+    /// single entry in a single change and pastes the compressed data rather than a TIFF re-encoding.
+    static func imageItem(_ url: URL, path: Bool = false) -> NSPasteboardItem {
         let item = NSPasteboardItem()
         item.setString(url.absoluteString, forType: .fileURL)
+        if path { item.setString(url.path, forType: .string) }
         guard let data = try? Data(contentsOf: url), let type = UTType(filenameExtension: url.pathExtension) else { return item }
         item.setData(data, forType: NSPasteboard.PasteboardType(type.identifier))
         // Apps that cannot read WebP, AVIF or HEIC still get something to paste.
