@@ -82,7 +82,7 @@ enum Runner {
             let produced = try await execute(pass, on: current, kind: kind, context: context)
             // Never keep a result that is not smaller when nothing about the content was asked to change.
             if !pass.changesContent, Files.size(produced) >= before, pass.placement == .inPlace {
-                try? FileManager.default.removeItem(at: produced.deletingLastPathComponent())
+                Workspace.discard(produced)
                 out.notes.append(L("Already optimised"))
                 out.skipped = (current.path == file.path)
                 return
@@ -96,7 +96,7 @@ enum Runner {
             let destination = Output.resolve(source: current, ext: ext, placement: placement, template: template, size: sizeLabel, scale: scaleLabel, counter: context.counter)
             if placement == .inPlace, out.backup == nil, current.path == file.path { out.backup = try? backup(of: file) }
             current = try Output.commit(produced: produced, source: current, destination: destination, placement: placement, keepDates: keepDates)
-            try? FileManager.default.removeItem(at: produced.deletingLastPathComponent())
+            Workspace.discard(produced)
         }
 
         for step in steps {
@@ -146,7 +146,7 @@ enum Runner {
                     let dest = Output.resolve(source: current, ext: produced.pathExtension, placement: context.forceTemporary ? .temporary : placement, counter: context.counter)
                     if placement == .inPlace, out.backup == nil, current.path == file.path { out.backup = try? backup(of: file) }
                     current = try Output.commit(produced: produced, source: current, destination: dest, placement: context.forceTemporary ? .temporary : placement, keepDates: keepDates)
-                    try? FileManager.default.removeItem(at: produced.deletingLastPathComponent())
+                    Workspace.discard(produced)
                 }
             case .stripExif:
                 let produced: URL?
@@ -159,7 +159,7 @@ enum Runner {
                     if out.backup == nil, current.path == file.path, !context.forceTemporary { out.backup = try? backup(of: file) }
                     let dest = context.forceTemporary ? Output.resolve(source: current, ext: p.pathExtension, placement: .temporary) : current
                     current = try Output.commit(produced: p, source: current, destination: dest, placement: context.forceTemporary ? .temporary : .inPlace, keepDates: keepDates)
-                    try? FileManager.default.removeItem(at: p.deletingLastPathComponent())
+                    Workspace.discard(p)
                 }
             case .extractPagesAsImages(let format, let quality, let loc):
                 guard kind == .pdf else { break }
@@ -178,7 +178,7 @@ enum Runner {
                 if placement == .inPlace, out.backup == nil, current.path == file.path { out.backup = try? backup(of: file) }
                 let dest = Output.resolve(source: current, ext: produced.pathExtension, placement: context.forceTemporary ? .temporary : placement, counter: context.counter)
                 current = try Output.commit(produced: produced, source: current, destination: dest, placement: context.forceTemporary ? .temporary : placement, keepDates: keepDates)
-                try? FileManager.default.removeItem(at: produced.deletingLastPathComponent())
+                Workspace.discard(produced)
             case .normalize(let lufs):
                 guard kind == .audio || kind == .video else { break }
                 var job = AudioJob(level: Prefs.audioLevel); job.normalizeLUFS = lufs
@@ -375,7 +375,7 @@ enum Runner {
                 j.targetExtension = ext
                 if step >= 4 { scale = max(0.1, scale * 0.85); j.downscale = scale }
                 let out = try await ImageEngine.process(file, job: j)
-                if let b = best { try? FileManager.default.removeItem(at: b.deletingLastPathComponent()) }
+                if let b = best { Workspace.discard(b) }
                 best = out
                 if Files.size(out) <= bytes { return out }
             }
@@ -386,7 +386,7 @@ enum Runner {
                 j.stripMetadata = true
                 if !VideoEngine.canRead(file.pathExtension) { j.targetExtension = "mp4" }
                 let out = try await VideoEngine.process(file, job: j)
-                if let b = best { try? FileManager.default.removeItem(at: b.deletingLastPathComponent()) }
+                if let b = best { Workspace.discard(b) }
                 best = out
                 if Files.size(out) <= bytes { return out }
                 budget *= Double(bytes) / Double(max(1, Files.size(out))) * 0.9
@@ -395,7 +395,7 @@ enum Runner {
             for dpi in PDFEngine.dpiChoices {
                 var j = PDFJob(level: .smaller); j.dpi = dpi
                 let out = try await PDFEngine.process(file, job: j)
-                if let b = best { try? FileManager.default.removeItem(at: b.deletingLastPathComponent()) }
+                if let b = best { Workspace.discard(b) }
                 best = out
                 if Files.size(out) <= bytes { return out }
             }
@@ -406,7 +406,7 @@ enum Runner {
                 var j = AudioJob(level: .smaller); j.bitrateKbps = max(32, kbps)
                 if AudioEngine.lossless.contains(Media.canonical(file.pathExtension)) { j.targetExtension = "m4a" }
                 let out = try await AudioEngine.process(file, job: j)
-                if let b = best { try? FileManager.default.removeItem(at: b.deletingLastPathComponent()) }
+                if let b = best { Workspace.discard(b) }
                 best = out
                 if Files.size(out) <= bytes { return out }
                 kbps = Int(Double(kbps) * 0.8)

@@ -187,6 +187,34 @@ enum Workspace {
         return dir.appendingPathComponent((name ?? "file") + (ext.isEmpty ? "" : "." + ext))
     }
 
+    /// Where a temporary result ends up: one stable folder per kind (images, pdfs, videos, audio) under the working
+    /// directory. A clipboard capture gets a short numeric name of its own, so it never looks like the original; any
+    /// other name is kept, made unique.
+    static func output(kind: MediaKind?, ext: String, name: String) -> URL {
+        guard let kind else { return temp(ext: ext, name: name) }
+        let dir = root.appendingPathComponent(folderName(kind), isDirectory: true)
+        try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        let suffix = ext.isEmpty ? "" : "." + ext
+        if name == "clipboard" {
+            while true {
+                let candidate = dir.appendingPathComponent("\(Int.random(in: 10_000...99_999))" + suffix)
+                if !FileManager.default.fileExists(atPath: candidate.path) { return candidate }
+            }
+        }
+        return Files.uniqueURL(dir.appendingPathComponent(name + suffix))
+    }
+
+    static func folderName(_ kind: MediaKind) -> String {
+        switch kind { case .image: "images"; case .pdf: "pdfs"; case .video: "videos"; case .audio: "audio" }
+    }
+
+    /// Removes the folder of a working file, but only a folder Shrinkbox made for it (named by a UUID): results in the
+    /// shared kind folders stay where they are.
+    static func discard(_ file: URL) {
+        let dir = file.deletingLastPathComponent()
+        if UUID(uuidString: dir.lastPathComponent) != nil { try? FileManager.default.removeItem(at: dir) }
+    }
+
     /// Deletes the working files older than `days` days. Only what Shrinkbox itself made goes (folders named by a UUID, and
     /// the same inside `backups`): the working directory can be any folder the user picked, with files of their own.
     static func clean(olderThanDays days: Int) {
@@ -201,6 +229,14 @@ enum Workspace {
         }
         sweep(root)
         sweep(root.appendingPathComponent("backups", isDirectory: true))
+        // The kind folders also hold files named by number only, which is how Shrinkbox names a clipboard result.
+        for kind in MediaKind.allCases {
+            let folder = root.appendingPathComponent(folderName(kind), isDirectory: true)
+            guard let items = try? fm.contentsOfDirectory(at: folder, includingPropertiesForKeys: [.contentModificationDateKey]) else { continue }
+            for item in items where Int(item.deletingPathExtension().lastPathComponent) != nil {
+                if let d = try? item.resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate, d < limit { try? fm.removeItem(at: item) }
+            }
+        }
     }
 }
 
@@ -348,7 +384,7 @@ enum Output {
             let url = source.deletingLastPathComponent().appendingPathComponent(fileName)
             return Files.uniqueURL(url)
         case .temporary:
-            return Workspace.temp(ext: ext, name: name)
+            return Workspace.output(kind: Media.kind(ofExtension: ext) ?? Media.kind(of: source), ext: ext, name: name)
         case .folder(let path):
             let expanded = NameTemplate.expand(path.expandingTilde, source: source, size: size, scale: scale, counter: counter)
             var url = URL(fileURLWithPath: expanded)
